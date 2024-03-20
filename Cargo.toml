@@ -1,4 +1,4 @@
 [workspace]
-members = ["server","css","portfolio"]
+members = ["server", "css", "portfolio"]
 resolver = "2"
-default-members = ["server"]
+default-members = ["server", "css"]

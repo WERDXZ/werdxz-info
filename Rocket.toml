@@ -1,3 +1,7 @@
 [global]
 address = "127.0.0.1"
 port = 1145
+
+[default.tls]
+certs = "/etc/letsencrypt/live/werdxz.info/cert.pem"
+key = "/etc/letsencrypt/live/werdxz.info/privkey.pem"

@@ -15,6 +15,14 @@ async fn index() -> Result<NamedFile, NotFound<String>>{
     }
 }
 
+#[get("/favicon.ico")]
+async fn favicon() -> Result<NamedFile, NotFound<String>> {
+    match NamedFile::open("./static/assets/image/favicon.ico").await {
+        Ok(f) => Ok(f),
+        Err(_) => Err(NotFound("Favicon not found".to_string())),
+    }
+}
+
 #[get("/assets/<path..>")]
 async fn assets(path: PathBuf) -> Result<NamedFile, NotFound<String>> {
     let path = PathBuf::from("./static/assets/").join(path);
@@ -38,6 +46,6 @@ async fn generated_assets(path: PathBuf) -> Result<NamedFile, NotFound<String>> 
 fn rocket() -> _ {
     // You must mount the index route
     rocket::build()
-        .mount("/", routes![index, assets, generated_assets])
+        .mount("/", routes![index, favicon, assets, generated_assets])
         .mount("/portfolio", portfolio::routes())
 }

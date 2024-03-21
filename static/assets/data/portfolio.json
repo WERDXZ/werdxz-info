@@ -1,0 +1,8 @@
+{
+	"werdxz-info" : {
+		"version" : "0.0.1-alpha",
+		"public-url" : "https://github.com/WERDXZ/werdxz-info",
+		"desc" : "Personal website refactored in rust.",
+		"readmd.md" : "https://raw.githubusercontent.com/WERDXZ/werdxz-info/main/README.md"
+	}
+}

@@ -1,0 +1,37 @@
+.tokyonight-day {
+	--background-color: #e1e2e7;
+	--foreground-color: #3760bf;
+
+	/* Highlight colors */
+	--cursor-color: #3760bf;
+	--text-color: #e1e2e7;
+
+	/* Normal colors */
+	--color-black: #e9e9ed;
+	--color-red: #f52a65;
+	--color-green: #587539;
+	--color-yellow: #8c6c3e;
+	--color-blue: #2e7de9;
+	--color-magenta: #9854f1;
+	--color-cyan: #007197;
+	--color-white: #6172b0;
+
+	background: var(--background-color);
+	color: var(--foreground-color);
+}
+
+.tokyonight-day .bright {
+	--color-black: #a1a6c5;
+	--color-red: #f52a65;
+	--color-green: #587539;
+	--color-yellow: #8c6c3e;
+	--color-blue: #2e7de9;
+	--color-magenta: #9854f1;
+	--color-cyan: #007197;
+	--color-white: #3760bf;
+}
+
+.tokyonight-day::selection {
+	background-color: var(--cursor-color);
+	color: var(--text-color);
+}

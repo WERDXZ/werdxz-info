@@ -1,0 +1,53 @@
+# Root Wrangler Configuration
+# This file is for managing shared Cloudflare R2 buckets
+# Individual apps have their own wrangler.toml files for deployment
+
+# R2 Bucket Configuration
+# These buckets are shared across all apps in the monorepo
+
+# Public bucket - publicly accessible content
+# Usage: Static assets, images, media files that should be public
+[[r2_buckets]]
+binding = "CLOUD"
+bucket_name = "cloud"
+preview_bucket_name = "cloud"
+
+# Private bucket - private content requiring authentication
+# Usage: HTML files, sensitive content, user data
+[[r2_buckets]]
+binding = "PRIVATE"
+bucket_name = "private"
+preview_bucket_name = "private"
+
+# Bucket structure:
+# cloud/ (public - accessible via CDN)
+#   shared/
+#     styles/
+#       variables.css (all frontends can import via URL)
+#
+# private/ (private - just for sync, no git bloat)
+#   www/
+#     public/
+#       index.html
+#       images/
+#       media/
+#       fonts/
+#   blog/
+#     public/
+#   ...
+
+# Useful Wrangler R2 commands for git hooks:
+# Upload files:
+#   wrangler r2 object put cloud/shared/styles/variables.css --file=./shared/styles/variables.css
+#   wrangler r2 object put private/www/public/index.html --file=./www/public/index.html
+#   wrangler r2 object put private/www/public/images/logo.png --file=./www/public/images/logo.png
+#
+# Download file:
+#   wrangler r2 object get private/www/public/index.html --file=./www/public/index.html
+#
+# List objects:
+#   wrangler r2 object list cloud --prefix=shared/
+#   wrangler r2 object list private --prefix=www/
+#
+# Delete file:
+#   wrangler r2 object delete private/www/public/images/old.png

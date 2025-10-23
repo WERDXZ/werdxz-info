@@ -1,0 +1,16 @@
+# HTML content managed via bucket (changes frequently)
+www/public/*.html
+
+# Images and media (managed via bucket when added)
+www/public/images/
+www/public/media/
+www/public/fonts/
+
+# Environment variables
+.env
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store

@@ -155,9 +155,11 @@ show_next_steps() {
     echo "     - Run: git commit -m 'test hook'"
     echo "     - The hook should detect and handle the file"
     echo ""
-    echo "  3. The hooks will now run automatically on:"
-    echo "     - git commit (pre-commit hook)"
-    echo "     - git pull/merge (post-merge hook)"
+    echo "  3. The pre-commit hook will now run automatically on git commit"
+    echo ""
+    echo "  4. To sync www/public/ files manually:"
+    echo "     - Upload: ./scripts/sync-to-r2.sh"
+    echo "     - Download: ./scripts/sync-from-r2.sh"
     echo ""
 }
 

@@ -41,25 +41,9 @@ log_error() {
 
 # Function to detect changes in monitored files/patterns
 detect_changes() {
-    local changed_files=()
-
-    # Only monitor shared/ files (tracked in git)
+    # Only monitor shared/styles/ files (tracked in git)
     # www/public/ files are untracked, use manual sync script instead
-    local patterns=(
-        "shared/styles/"
-    )
-
-    for pattern in "${patterns[@]}"; do
-        # Check staged files
-        while IFS= read -r file; do
-            if [[ -n "$file" ]]; then
-                changed_files+=("$file")
-            fi
-        done < <(git diff --cached --name-only --diff-filter=ACM | grep -E "$pattern" || true)
-    done
-
-    # Return the list of changed files
-    printf '%s\n' "${changed_files[@]}"
+    git diff --cached --name-only --diff-filter=ACM -- 'shared/styles/' || true
 }
 
 # Function to upload files to R2 bucket

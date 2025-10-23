@@ -1,0 +1,375 @@
+/* Import shared design system */
+@import url('https://cloud.werdxz.info/shared/styles/variables.css');
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+}
+
+/* Skip link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-text-link);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Resume container */
+.resume-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+/* Section spacing */
+r-header,
+r-education,
+r-experience,
+r-projects,
+r-extracurricular {
+    display: block;
+    margin-bottom: var(--spacing-2xl);
+}
+
+/* Section headings */
+.section-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--color-border-default);
+}
+
+/* Header styling */
+.header {
+    margin-bottom: var(--spacing-2xl);
+    text-align: center;
+}
+
+.name {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+}
+
+.contact-info {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-secondary);
+    font-style: normal;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.links a {
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Entry styling */
+.entry {
+    margin-bottom: var(--spacing-xl);
+}
+
+.project-links {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+}
+
+.project-links a {
+    font-size: var(--font-size-sm);
+}
+
+.status-badge {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+    font-style: italic;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.entry-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+.entry-meta {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.entry-subtitle {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.entry-description {
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin-bottom: var(--spacing-sm);
+}
+
+.entry-bullets {
+    list-style-position: outside;
+    padding-left: var(--spacing-lg);
+    margin-top: var(--spacing-sm);
+}
+
+.entry-bullets li {
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Links */
+a {
+    color: var(--color-text-link);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-text-link-hover);
+    text-decoration: underline;
+}
+
+/* SVG icon alignment */
+.website-link svg {
+    vertical-align: middle;
+    margin-left: var(--spacing-xs);
+}
+
+/* Print button */
+.print-button {
+    position: fixed;
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--color-text-link);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.print-button:hover {
+    background-color: var(--color-text-link-hover);
+    transform: scale(1.05);
+}
+
+.print-button:active {
+    transform: scale(0.95);
+}
+
+/* Print dialog */
+.print-dialog {
+    border: none;
+    border-radius: 8px;
+    padding: var(--spacing-xl);
+    max-width: 500px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+.print-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.print-dialog h2 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-xl);
+}
+
+.print-dialog p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.print-dialog ul {
+    margin-bottom: var(--spacing-lg);
+    padding-left: var(--spacing-lg);
+}
+
+.print-dialog li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--color-text-link);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-text-link-hover);
+}
+
+.btn-secondary {
+    background-color: var(--color-bg-secondary, #e5e5e5);
+    color: var(--color-text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-bg-tertiary, #d0d0d0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) and (not print) {
+    .resume-container {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .entry-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .section-title {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* Print styles for PDF generation */
+@media print {
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: white;
+        color: black;
+        font-size: 70%;
+        transform-origin: top left;
+    }
+
+    .resume-container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    /* Reduce spacing between sections */
+    r-header,
+    r-education,
+    r-experience,
+    r-projects,
+    r-extracurricular {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    /* Reduce spacing between entries */
+    .entry {
+        margin-bottom: var(--spacing-md);
+    }
+
+    /* Reduce section title size and spacing */
+    .section-title {
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--spacing-sm);
+        padding-bottom: var(--spacing-xs);
+    }
+
+    /* Reduce header spacing */
+    .header {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .name {
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .contact-info {
+        margin-bottom: var(--spacing-xs);
+    }
+
+    /* Preserve two-column layout */
+    .entry-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-wrap: wrap;
+    }
+
+    /* Avoid page breaks inside entries */
+    .entry {
+        page-break-inside: avoid;
+    }
+
+    /* Hide SVGs in print */
+    svg {
+        display: none;
+    }
+
+    /* Remove links underlines in print */
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    /* Show URLs after links (optional) */
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+}

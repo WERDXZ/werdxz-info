@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Jiqing Yang - Computer Science Student at CSU Chico">
+    <meta name="author" content="Jiqing Yang">
+    <title>Jiqing Yang - Resume</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link no-print">Skip to main content</a>
+    <!-- Templates for custom elements -->
+    <template id="header-template">
+        <header class="header">
+            <h1 class="name"></h1>
+            <address class="contact-info">
+                <span class="email"></span>
+                <span class="phone"></span>
+                <span class="location"></span>
+            </address>
+            <nav class="links" aria-label="Social links">
+                <a class="website" target="_blank" rel="noopener noreferrer"></a>
+                <a class="github" target="_blank" rel="noopener noreferrer"></a>
+                <a class="linkedin" target="_blank" rel="noopener noreferrer"></a>
+            </nav>
+        </header>
+    </template>
+
+    <template id="education-entry-template">
+        <article class="entry">
+            <div class="entry-header">
+                <h3 class="entry-title institution"></h3>
+                <time class="entry-meta dates"></time>
+            </div>
+            <div class="entry-subtitle">
+                <span class="degree"></span>
+                <span class="minors"></span>
+            </div>
+            <div class="entry-subtitle location"></div>
+            <div class="gpa"></div>
+        </article>
+    </template>
+
+    <template id="experience-entry-template">
+        <article class="entry">
+            <div class="entry-header">
+                <h3 class="entry-title title"></h3>
+                <time class="entry-meta dates"></time>
+            </div>
+            <div class="entry-subtitle organization"></div>
+            <div class="entry-subtitle location"></div>
+            <p class="entry-description description"></p>
+            <ul class="entry-bullets bullets"></ul>
+        </article>
+    </template>
+
+    <template id="project-entry-template">
+        <article class="entry">
+            <div class="entry-header">
+                <div>
+                    <h3 class="entry-title title"></h3>
+                    <nav class="project-links" aria-label="Project links">
+                        <a class="github-link" target="_blank" rel="noopener noreferrer"></a>
+                        <a class="live-link" target="_blank" rel="noopener noreferrer"></a>
+                    </nav>
+                </div>
+                <div class="entry-meta">
+                    <time class="date"></time>
+                    <div class="status-badge"></div>
+                </div>
+            </div>
+            <p class="entry-description description"></p>
+            <ul class="entry-bullets bullets"></ul>
+        </article>
+    </template>
+
+    <template id="extracurricular-entry-template">
+        <article class="entry">
+            <div class="entry-header">
+                <h3 class="entry-title title"></h3>
+                <time class="entry-meta dates"></time>
+            </div>
+            <div class="entry-subtitle">
+                <span class="organization"></span>
+                <a class="website-link" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+            <p class="entry-description description"></p>
+            <ul class="entry-bullets achievements"></ul>
+        </article>
+    </template>
+
+    <main id="main-content" class="resume-container">
+        <r-header></r-header>
+        <section aria-labelledby="education-heading">
+            <r-education></r-education>
+        </section>
+        <section aria-labelledby="experience-heading">
+            <r-experience></r-experience>
+        </section>
+        <section aria-labelledby="projects-heading">
+            <r-projects></r-projects>
+        </section>
+        <section aria-labelledby="extracurricular-heading">
+            <r-extracurricular></r-extracurricular>
+        </section>
+    </main>
+
+    <!-- Print button -->
+    <button id="print-btn" class="print-button no-print" aria-label="Print resume">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+    </button>
+
+    <!-- Print dialog -->
+    <dialog id="print-dialog" class="print-dialog">
+        <h2>Print Instructions</h2>
+        <p>For the best PDF output:</p>
+        <ul>
+            <li>Disable headers and footers in your browser's print settings</li>
+            <li>Set margins to "Minimum" or "None"</li>
+            <li>Use "Save as PDF" as the destination</li>
+        </ul>
+        <div class="dialog-buttons">
+            <button id="print-confirm-btn" class="btn-primary">Print</button>
+            <button id="print-cancel-btn" class="btn-secondary">Cancel</button>
+        </div>
+    </dialog>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

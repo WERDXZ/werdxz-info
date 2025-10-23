@@ -1,0 +1,30 @@
+# Wrangler Configuration for www (homepage)
+# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "werdxz-www"
+compatibility_date = "2025-10-22"
+
+# Static Assets (serves public/ directory)
+[assets]
+directory = "./public"
+
+# Observability
+[observability]
+enabled = true
+
+# R2 Bucket Binding (for HTML content files)
+# Uncomment when R2 bucket is created
+# [[r2_buckets]]
+# binding = "CONTENT_BUCKET"
+# bucket_name = "werdxz-content"
+
+# Smart Placement (optional - optimize worker location)
+# [placement]
+# mode = "smart"
+
+# Environment Variables (optional)
+# [vars]
+# ENVIRONMENT = "production"
+
+# Note: Use `wrangler secret put <KEY>` for sensitive data
+# Docs: https://developers.cloudflare.com/workers/configuration/secrets/

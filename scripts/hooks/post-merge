@@ -1,0 +1,141 @@
+#!/bin/bash
+#
+# Post-Merge Hook - Reminder for Manual Sync
+#
+# This hook executes after a successful git pull/merge.
+#
+# Note: www/public/ files are untracked and cannot be auto-synced via git hooks.
+#       If you need to sync www/public/ files, run: ./scripts/sync-from-r2.sh
+#
+# shared/styles/ is in git (version controlled), already pulled from git.
+#
+# Exit codes:
+#   0 - Success (always)
+#
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored messages
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Function to create directories if they don't exist
+ensure_directories() {
+    local dirs=("www/public" "www/public/images" "www/public/media" "www/public/fonts")
+
+    for dir in "${dirs[@]}"; do
+        if [[ ! -d "$dir" ]]; then
+            log_info "Creating directory: $dir"
+            mkdir -p "$dir"
+        fi
+    done
+}
+
+# Function to download files from R2 bucket
+download_from_bucket() {
+    log_info "Downloading static assets from R2 bucket..."
+
+    # Check if wrangler is available (try npx first, then global)
+    local wrangler_cmd="npx wrangler"
+    if ! command -v npx &> /dev/null; then
+        if ! command -v wrangler &> /dev/null; then
+            log_warning "Neither npx nor wrangler found"
+            log_info "Skipping R2 download. Install Node.js and wrangler"
+            return 0
+        fi
+        wrangler_cmd="wrangler"
+    fi
+
+    # Define files to download
+    local download_files=(
+        "private/www/public/index.html:www/public/index.html"
+        # Add more as needed:
+        # "private/www/public/about.html:www/public/about.html"
+        # "cloud/www/public/images/logo.png:www/public/images/logo.png"
+    )
+
+    for entry in "${download_files[@]}"; do
+        local r2_path="${entry%%:*}"
+        local local_path="${entry##*:}"
+
+        log_info "  - Downloading $r2_path to $local_path"
+
+        # Create directory if it doesn't exist
+        local dir=$(dirname "$local_path")
+        mkdir -p "$dir"
+
+        # Download from R2 using wrangler (--remote for actual Cloudflare R2)
+        if ! $wrangler_cmd r2 object get "$r2_path" --file="$local_path" --remote 2>/dev/null; then
+            log_warning "Failed to download $r2_path (file may not exist yet)"
+        fi
+    done
+
+    log_success "R2 download completed"
+    return 0
+}
+
+# Function to verify downloaded files
+verify_files() {
+    local required_files=(
+        "www/public/index.html"
+    )
+
+    local all_present=true
+
+    for file in "${required_files[@]}"; do
+        if [[ ! -f "$file" ]]; then
+            log_warning "Expected file not found: $file"
+            all_present=false
+        fi
+    done
+
+    if [[ "$all_present" = true ]]; then
+        log_success "All expected content files are present"
+    else
+        log_warning "Some expected content files are missing"
+        log_info "You may need to manually sync files from the bucket"
+    fi
+}
+
+# Main execution
+main() {
+    log_info "Post-merge completed"
+    log_info ""
+    log_info "shared/styles/ files are version controlled (already pulled from git)"
+    log_info ""
+    log_info "To sync www/public/ files from R2, run:"
+    log_info "  ./scripts/sync-from-r2.sh"
+    log_info ""
+
+    exit 0
+}
+
+# Load environment variables if .env exists
+if [[ -f .env ]]; then
+    set -a
+    source .env
+    set +a
+fi
+
+# Run main function
+main

@@ -1,0 +1,158 @@
+#!/bin/bash
+#
+# Pre-commit Hook - Upload Shared Files to R2
+#
+# This hook detects changes to shared/ files (tracked in git),
+# uploads them to the R2 cloud bucket (public CDN), and commits them to git.
+#
+# For www/public/ files (untracked):
+#   Use scripts/sync-to-r2.sh to manually upload to private bucket
+#
+# Exit codes:
+#   0 - Success (commit proceeds)
+#   1 - Failure (commit aborted)
+#
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored messages
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Function to detect changes in monitored files/patterns
+detect_changes() {
+    local changed_files=()
+
+    # Only monitor shared/ files (tracked in git)
+    # www/public/ files are untracked, use manual sync script instead
+    local patterns=(
+        "shared/styles/"
+    )
+
+    for pattern in "${patterns[@]}"; do
+        # Check staged files
+        while IFS= read -r file; do
+            if [[ -n "$file" ]]; then
+                changed_files+=("$file")
+            fi
+        done < <(git diff --cached --name-only --diff-filter=ACM | grep -E "$pattern" || true)
+    done
+
+    # Return the list of changed files
+    printf '%s\n' "${changed_files[@]}"
+}
+
+# Function to upload files to R2 bucket
+upload_to_bucket() {
+    local files=("$@")
+
+    log_info "Uploading ${#files[@]} file(s) to R2 bucket..."
+
+    # Check if wrangler is available (try npx first, then global)
+    local wrangler_cmd="npx wrangler"
+    if ! command -v npx &> /dev/null; then
+        if ! command -v wrangler &> /dev/null; then
+            log_error "Neither npx nor wrangler found"
+            log_info "Install Node.js and wrangler: npm install -g wrangler"
+            return 1
+        fi
+        wrangler_cmd="wrangler"
+    fi
+
+    # Upload each file to appropriate bucket
+    for file in "${files[@]}"; do
+        # Determine bucket based on file path
+        # Only shared/ goes to cloud (public CDN for all frontends)
+        # Everything else goes to private (just for sync, no git bloat)
+        local bucket="private"
+        if [[ "$file" == "shared/"* ]]; then
+            bucket="cloud"  # Shared styles accessible by all frontends
+        fi
+
+        # R2 path: bucket/file
+        local r2_path="${file}"  # e.g., www/public/index.html or shared/styles/variables.css
+
+        log_info "  - Uploading $file to $bucket/$r2_path"
+
+        # Upload to R2 using wrangler (--remote for actual Cloudflare R2)
+        if ! $wrangler_cmd r2 object put "$bucket/$r2_path" --file="$file" --remote 2>/dev/null; then
+            log_error "Failed to upload $file"
+            return 1
+        fi
+    done
+
+    log_success "Files uploaded successfully to R2"
+    return 0
+}
+
+# Main execution
+main() {
+    log_info "Running pre-commit hook..."
+
+    # Detect changed files in monitored directories
+    # Note: Using while read loop for bash 3.2 compatibility (macOS default)
+    changed_files=()
+    while IFS= read -r file; do
+        changed_files+=("$file")
+    done < <(detect_changes)
+
+    if [[ ${#changed_files[@]} -eq 0 ]]; then
+        log_info "No static asset changes detected"
+        log_success "Pre-commit hook completed"
+        exit 0
+    fi
+
+    log_info "Detected ${#changed_files[@]} changed static asset file(s):"
+    for file in "${changed_files[@]}"; do
+        log_info "  - $file"
+    done
+
+    # Upload files to bucket
+    if ! upload_to_bucket "${changed_files[@]}"; then
+        log_error "Failed to upload files to bucket"
+        log_error "Commit aborted to prevent data loss"
+        log_info "Troubleshooting:"
+        log_info "  1. Check your bucket credentials in .env"
+        log_info "  2. Verify network connectivity"
+        log_info "  3. Ensure bucket permissions are correct"
+        log_info ""
+        log_info "To bypass this hook (not recommended):"
+        log_info "  git commit --no-verify"
+        exit 1
+    fi
+
+    log_success "Shared files uploaded to R2 cloud bucket and will be committed to git"
+    log_success "Pre-commit hook completed"
+
+    exit 0
+}
+
+# Load environment variables if .env exists
+if [[ -f .env ]]; then
+    set -a
+    source .env
+    set +a
+fi
+
+# Run main function
+main

@@ -20,3 +20,8 @@ bucket_name = "cloud"
 [[kv_namespaces]]
 binding = "RESUME_KV"
 id = "ad9607c404424a8eb6949994a4383845"
+
+# Assets binding for static files
+[assets]
+directory = "static"
+binding = "ASSETS"

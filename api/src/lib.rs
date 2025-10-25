@@ -36,7 +36,6 @@ async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     let response = Router::new()
         // Meta endpoints (unversioned)
         .get_async("/", |req, ctx| async move { routes::meta::handle_root(req, ctx).await })
-        .get_async("/docs", |req, ctx| async move { routes::meta::handle_docs(req, ctx).await })
         .get_async("/openapi.json", |req, ctx| async move { routes::meta::handle_openapi_spec(req, ctx).await })
 
         // v1 API endpoints

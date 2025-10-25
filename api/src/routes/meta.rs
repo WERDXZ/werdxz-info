@@ -160,8 +160,3 @@ pub async fn handle_openapi_spec(_req: Request, _ctx: RouteContext<()>) -> Resul
             r
         })
 }
-
-pub async fn handle_docs(_req: Request, _ctx: RouteContext<()>) -> Result<Response> {
-    const DOCS_HTML: &str = include_str!("../../static/docs.html");
-    Response::from_html(DOCS_HTML)
-}

@@ -15,7 +15,7 @@ use crate::routes::meta::{HealthResponse, ServiceStatus, ApiInfoResponse, ApiEnd
         )
     ),
     servers(
-        (url = "https://werdxz-api.werdxz.workers.dev", description = "Production"),
+        (url = "https://api.werdxz.info", description = "Production"),
         (url = "http://localhost:8787", description = "Local development")
     ),
     paths(

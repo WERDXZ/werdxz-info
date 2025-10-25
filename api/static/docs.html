@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>werdxz API Documentation</title>
+    <link rel="stylesheet" href="https://cloud.werdxz.info/shared/styles/variables.css">
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: var(--font-family-sans);
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+            min-height: 100vh;
+        }
+
+        .custom-header {
+            background: var(--gray-900);
+            color: var(--gray-50);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .custom-header h1 {
+            margin: 0 0 var(--spacing-sm) 0;
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            background: linear-gradient(135deg, var(--blue-light) 0%, var(--blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .custom-header p {
+            margin: 0;
+            opacity: 0.8;
+            font-size: var(--font-size-md);
+            color: var(--gray-400);
+        }
+
+        .swagger-container {
+            max-width: 1400px;
+            margin: var(--spacing-2xl) auto;
+            padding: 0 var(--spacing-2xl);
+        }
+
+        #swagger-ui {
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            padding: var(--spacing-2xl);
+        }
+
+        /* Custom Swagger UI styling */
+        .swagger-ui .topbar {
+            display: none;
+        }
+
+        .swagger-ui .info .title {
+            color: var(--blue);
+            font-family: var(--font-family-sans);
+        }
+
+        .swagger-ui .opblock-tag {
+            border-bottom: 2px solid var(--blue);
+            font-family: var(--font-family-sans);
+        }
+
+        .swagger-ui .opblock.opblock-get .opblock-summary-method {
+            background: var(--blue);
+        }
+
+        .swagger-ui .opblock.opblock-get {
+            border-color: var(--blue);
+        }
+
+        .swagger-ui .btn.execute {
+            background: var(--blue);
+            border-color: var(--blue);
+            font-family: var(--font-family-sans);
+        }
+
+        .swagger-ui .btn.execute:hover {
+            background: var(--blue-dark);
+            border-color: var(--blue-dark);
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--blue);
+            color: white;
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            margin-left: var(--spacing-md);
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .custom-header {
+                background: var(--gray-800);
+            }
+
+            .custom-header p {
+                color: var(--gray-400);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-header">
+        <h1>werdxz API <span class="version-badge">v1</span></h1>
+        <p>Interactive API Documentation</p>
+    </div>
+
+    <div class="swagger-container">
+        <div id="swagger-ui"></div>
+    </div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function() {
+            SwaggerUIBundle({
+                url: '/openapi.json',
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                layout: "BaseLayout",
+                defaultModelsExpandDepth: 1,
+                defaultModelExpandDepth: 1,
+                docExpansion: 'list',
+                filter: true,
+                tryItOutEnabled: true
+            });
+        };
+    </script>
+</body>
+</html>

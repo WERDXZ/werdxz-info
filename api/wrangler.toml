@@ -1,0 +1,22 @@
+name = "werdxz-api"
+main = "build/index.js"
+compatibility_date = "2025-10-23"
+
+[build]
+command = "cargo install -q worker-build && worker-build --release"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "werdxz-db"
+database_id = "cc2551bc-f9b2-4735-840d-549b364fa762"
+
+# R2 Bucket for blog content storage (uses existing cloud bucket)
+[[r2_buckets]]
+binding = "CONTENT_BUCKET"
+bucket_name = "cloud"
+
+# KV Namespace for resume data
+[[kv_namespaces]]
+binding = "RESUME_KV"
+id = "ad9607c404424a8eb6949994a4383845"

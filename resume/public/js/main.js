@@ -8,7 +8,7 @@ async function loadResumeData() {
         // Use API instead of direct cloud bucket access
         // Forward any query parameters from the page URL to the API
         const urlParams = new URLSearchParams(window.location.search);
-        const apiUrl = new URL('http://localhost:60232/v1/resume');
+        const apiUrl = new URL('https://api.werdxz.info/v1/resume');
         apiUrl.search = urlParams.toString();
 
         const response = await fetch(apiUrl.toString());

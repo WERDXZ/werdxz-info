@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS posts (
     title TEXT NOT NULL,
     summary TEXT,
     published_at TEXT NOT NULL,
-    updated_at TEXT,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     external_url TEXT,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

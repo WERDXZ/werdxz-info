@@ -123,6 +123,10 @@ enum PostCommands {
         /// External URL (for cross-posted content)
         #[arg(long)]
         external_url: Option<String>,
+
+        /// Publish to remote (default is local)
+        #[arg(long)]
+        remote: bool,
     },
 
     /// List all published posts
@@ -163,8 +167,8 @@ fn main() -> Result<()> {
             ProjectCommands::Deploy { project, production } => deploy(&workspace_root, &project, production),
         },
         Commands::Post { command } => match command {
-            PostCommands::Publish { file, slug, title, summary, tags, external_url } => {
-                publish_post(&workspace_root, &file, &slug, &title, summary.as_deref(), tags.as_deref(), external_url.as_deref())
+            PostCommands::Publish { file, slug, title, summary, tags, external_url, remote } => {
+                publish_post(&workspace_root, &file, &slug, &title, summary.as_deref(), tags.as_deref(), external_url.as_deref(), remote)
             }
             PostCommands::List { remote } => list_posts(&workspace_root, remote),
             PostCommands::Delete { slug, remote } => delete_post(&workspace_root, &slug, remote),
@@ -394,6 +398,7 @@ fn publish_post(
     summary: Option<&str>,
     tags: Option<&str>,
     external_url: Option<&str>,
+    remote: bool,
 ) -> Result<()> {
     let content_id = uuid::Uuid::new_v4();
 
@@ -423,13 +428,27 @@ fn publish_post(
 
     // 1. Upload markdown to R2
     let r2_key = format!("posts/{}.md", content_id);
+    let r2_path = format!("{}/{}", bucket_name, r2_key);
 
-    let r2_status = Command::new("npx")
-        .args(["wrangler", "r2", "object", "put", &bucket_name, &r2_key])
-        .arg("--file")
-        .arg(file)
-        .current_dir(workspace_root.join("api"))
-        .status()
+    // Resolve file path relative to workspace root before changing directories
+    let file_path = if Path::new(file).is_absolute() {
+        PathBuf::from(file)
+    } else {
+        workspace_root.join(file)
+    };
+
+    let mut r2_cmd = Command::new("npx");
+    r2_cmd.args(["wrangler", "r2", "object", "put", &r2_path]);
+
+    if remote {
+        r2_cmd.arg("--remote");
+    }
+
+    r2_cmd.arg("--file")
+        .arg(&file_path)
+        .current_dir(workspace_root.join("api"));
+
+    let r2_status = r2_cmd.status()
         .context("Failed to upload to R2")?;
 
     if !r2_status.success() {
@@ -447,12 +466,18 @@ fn publish_post(
         content_id, slug, title, summary_str, external_url_str
     );
 
-    let db_status = Command::new("npx")
-        .args(["wrangler", "d1", "execute", &db_name, "--remote"])
-        .arg("--command")
+    let mut db_cmd = Command::new("npx");
+    db_cmd.args(["wrangler", "d1", "execute", &db_name]);
+
+    if remote {
+        db_cmd.arg("--remote");
+    }
+
+    db_cmd.arg("--command")
         .arg(&sql)
-        .current_dir(workspace_root.join("api"))
-        .status()
+        .current_dir(workspace_root.join("api"));
+
+    let db_status = db_cmd.status()
         .context("Failed to insert into D1")?;
 
     if !db_status.success() {
@@ -474,12 +499,18 @@ fn publish_post(
                 tag_name
             );
 
-            Command::new("npx")
-                .args(["wrangler", "d1", "execute", &db_name, "--remote"])
-                .arg("--command")
+            let mut tag_cmd = Command::new("npx");
+            tag_cmd.args(["wrangler", "d1", "execute", &db_name]);
+
+            if remote {
+                tag_cmd.arg("--remote");
+            }
+
+            tag_cmd.arg("--command")
                 .arg(&insert_tag_sql)
-                .current_dir(workspace_root.join("api"))
-                .status()
+                .current_dir(workspace_root.join("api"));
+
+            tag_cmd.status()
                 .context("Failed to insert tag")?;
 
             // Get tag ID and insert into post_tags junction table
@@ -489,12 +520,18 @@ fn publish_post(
                 content_id, tag_name
             );
 
-            Command::new("npx")
-                .args(["wrangler", "d1", "execute", &db_name, "--remote"])
-                .arg("--command")
+            let mut link_cmd = Command::new("npx");
+            link_cmd.args(["wrangler", "d1", "execute", &db_name]);
+
+            if remote {
+                link_cmd.arg("--remote");
+            }
+
+            link_cmd.arg("--command")
                 .arg(&link_tag_sql)
-                .current_dir(workspace_root.join("api"))
-                .status()
+                .current_dir(workspace_root.join("api"));
+
+            link_cmd.status()
                 .context("Failed to link tag to post")?;
         }
     }

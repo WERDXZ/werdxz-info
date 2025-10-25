@@ -74,9 +74,9 @@ pub async fn handle_get_post(_req: Request, ctx: RouteContext<()>) -> Result<Res
             let error = ApiError::not_found("Post");
             error.to_response(404)
         }
-        Err(_e) => {
-            // Log detailed error server-side (when error logging is fully implemented)
-            // console_error!("Failed to get post '{}': {:?}", slug, e);
+        Err(e) => {
+            // Log detailed error server-side
+            console_error!("Failed to get post '{}': {:?}", slug, e);
             let error = ApiError::internal_error("Unable to load post");
             error.to_response(500)
         }

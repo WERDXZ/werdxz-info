@@ -25,7 +25,6 @@ pub struct Post {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,  // Fetched from R2, not in DB
     pub published_at: String,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
     pub updated_at: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty", deserialize_with = "deserialize_tags")]
     pub tags: Vec<String>,

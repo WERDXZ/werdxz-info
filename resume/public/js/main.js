@@ -5,12 +5,18 @@ let resumeData = null;
 
 async function loadResumeData() {
     try {
-        const response = await fetch('https://cloud.werdxz.info/resume/public/resume.json');
+        // Use API instead of direct cloud bucket access
+        // Forward any query parameters from the page URL to the API
+        const urlParams = new URLSearchParams(window.location.search);
+        const apiUrl = new URL('http://localhost:60232/v1/resume');
+        apiUrl.search = urlParams.toString();
+
+        const response = await fetch(apiUrl.toString());
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         resumeData = await response.json();
-        console.log('Resume data loaded successfully');
+        console.log('Resume data loaded successfully from API');
         return resumeData;
     } catch (error) {
         console.error('Error loading resume data:', error);

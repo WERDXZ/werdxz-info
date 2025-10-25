@@ -4,17 +4,24 @@
 werdxz.info is a multi-stack website experiment showcasing different frontend technologies across different sections. The project serves as both a personal website and a playground for exploring various web development approaches.
 
 ## Tech Stack
-- **Home Page**: Pure HTML/CSS (no framework)
-- **Deployment**: Cloudflare Workers
-- **Design System**: CSS Custom Properties (CSS Variables)
-- **Future Sections**: React, Vue, Svelte, Web Components (planned)
+- **Home Page** (`www/`): Pure HTML/CSS (no framework)
+- **Resume Page** (`resume/`): Web Components (custom elements)
+- **API Backend** (`api/`): workers-rs (Rust on Cloudflare Workers)
+- **Blog** (planned): Qwik City
+- **Portfolio** (planned): Leptos SSR
+- **Projects** (planned): Qwik City or static generation
+- **Deployment**: Cloudflare Workers for all services
+- **Design System**: CSS Custom Properties served from cloud bucket
+- **Data Storage**: D1 (SQLite), Durable Objects, R2 bucket
 
 ## Project Conventions
 
 ### Code Style
 - **HTML**: Use semantic HTML5 elements
 - **CSS**: Follow BEM-like naming conventions for classes
-- **Indentation**: Use consistent indentation (spaces or tabs)
+- **JavaScript**: ES modules, no build step for simple pages
+- **Rust**: Follow Rust standard style (`cargo fmt`), use `clippy` for linting
+- **Indentation**: Use consistent indentation (spaces or tabs per language convention)
 - **Comments**: Add comments for complex logic or design decisions
 
 ### Architecture Patterns
@@ -81,9 +88,14 @@ This website intentionally uses different technologies for different sections to
 4. Maintain flexibility to adopt new technologies
 
 ### Content Strategy
-- **Current**: Placeholder content with structure in place
-- **Future**: Dynamic content fetched from GitHub API
-- **Links**: Sections for blog, portfolio, experiments (coming soon)
+- **Current**: Homepage with links, resume page with filtered data from cloud bucket
+- **In Progress**: API backend for blog posts and resume filtering
+- **Planned**: Blog (technical writing), Portfolio (curated projects), Projects (GitHub integration)
+- **Audience Segmentation**:
+  - **Portfolio** → Recruiters/employers (showcase best work)
+  - **Projects** → Fellow developers (collaboration, contributions)
+  - **Blog** → Everyone (teaching, knowledge sharing)
+  - **Resume** → HR/hiring managers (credentials, printable)
 
 ## Important Constraints
 
@@ -104,31 +116,35 @@ This website intentionally uses different technologies for different sections to
 
 ## External Dependencies
 
-### Cloudflare Workers
-- Hosting platform for the website
-- Configuration in `www/wrangler.jsonc`
-- Deployment via `wrangler deploy`
-- Assets served from `www/public/` directory
+### Cloudflare Infrastructure
+- **Workers**: Hosting for www, resume, api services
+- **D1**: SQLite database for API metadata (blog posts, etc.)
+- **Durable Objects**: Content storage for blog markdown
+- **R2 Bucket** (`cloud`): Shared assets (styles, resume data)
+- **Deployment**: `wrangler deploy` per service
 
-### Private Bucket (To Be Configured)
-- Storage for static assets (`/shared/styles/`, `www/public/`)
-- Not yet configured - placeholder mode active
-- Options: AWS S3, Cloudflare R2, Google Cloud Storage
-- Credentials stored in `.env` (not committed)
+### Cloudflare R2 Bucket (`cloud`)
+- **URL**: cloud.werdxz.info
+- **Storage**:
+  - `/shared/styles/variables.css` - Design tokens
+  - `/resume/public/resume.json` - Resume data (not in git)
+  - Static assets for www (uploaded via git hooks)
+- **CORS**: Configured for all werdxz.info subdomains
+- **Credentials**: Stored in `.env` (not committed)
 
 ### Future Dependencies
-- GitHub API for dynamic content
+- GitHub API for projects page integration
 - Analytics (if added)
-- CDN for optimized asset delivery
+- Search service for blog (possibly D1 FTS5)
 
 ## Development Workflow
 
 ### Initial Setup
 1. Clone repository
-2. Run `./scripts/setup-hooks.sh`
+2. Run `./scripts/setup-hooks.sh` to install git hooks
 3. Copy `.env.example` to `.env`
-4. Configure bucket credentials (or use placeholder mode)
-5. Run `npm run dev` in `www/` to start development server
+4. Configure R2 bucket credentials in `.env`
+5. Run `npm run dev` in service directories (`www/`, `resume/`, `api/`) for local development
 
 ### Making Changes to Static Assets
 1. Edit files in `/shared/styles/` or `www/public/`
@@ -141,7 +157,17 @@ This website intentionally uses different technologies for different sections to
 2. Post-merge hook automatically downloads latest static assets from bucket
 3. Local files are synchronized
 
-### Deploying
+### Deploying Services
 1. Ensure latest changes are committed
-2. Run `npm run deploy` in `www/` directory
-3. Cloudflare Workers will deploy the latest version
+2. Navigate to service directory (`www/`, `resume/`, `api/`)
+3. Run `npm run deploy` or `wrangler deploy`
+4. Each service deploys independently to its subdomain:
+   - `www/` → werdxz.info
+   - `resume/` → resume.werdxz.info
+   - `api/` → api.werdxz.info
+
+### Managing Blog Content (API)
+1. Use `werdxz-cli` wrapper tool (wraps wrangler commands)
+2. Create posts: `werdxz-cli posts create --title "..." --file post.md`
+3. Publish: `werdxz-cli posts publish <slug>`
+4. No web-based CMS (v1) - CLI-first approach for security

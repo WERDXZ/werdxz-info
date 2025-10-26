@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "werdxz blog",
+  "short_name": "werdxz blog",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "Personal blog of werdxz."
+}

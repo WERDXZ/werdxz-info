@@ -1,0 +1,83 @@
+.card {
+  padding: var(--spacing-xl) 0;
+}
+
+.cardLink {
+  display: block;
+  color: inherit;
+}
+
+.cardLink:hover {
+  text-decoration: none;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-link);
+}
+
+.summary {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: var(--line-height-relaxed);
+}
+
+.meta {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.date,
+.readTime {
+  display: flex;
+  align-items: center;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tags > .tag {
+  display: inline-block;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.tags > .tag a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  display: inline-block;
+}
+
+.tags > .tag a:hover {
+  color: var(--color-text-link);
+}
+
+.tags > .tag:not(:last-child)::after {
+  content: " · ";
+  color: var(--color-text-tertiary);
+  padding: 0 var(--spacing-xs);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .title {
+    font-size: var(--font-size-xl);
+  }
+}

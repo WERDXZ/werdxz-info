@@ -36,21 +36,26 @@ The blog MUST render markdown content as formatted HTML.
 ### Requirement: Code Syntax Highlighting
 The blog MUST provide syntax highlighting for code blocks.
 
+**Implementation Note**: Originally attempted server-side highlighting with Shiki, but this caused Cloudflare Workers CPU time limit errors (10ms+ per request). Migrated to client-side highlight.js to eliminate server CPU cost and prevent production errors.
+
 #### Scenario: Highlight code blocks
 **GIVEN** a markdown code block with language specifier
 **WHEN** rendering the post
-**THEN** apply syntax highlighting using Shiki or Highlight.js
+**THEN** apply syntax highlighting using highlight.js (client-side)
 **AND** support common languages (JavaScript, TypeScript, Rust, Python, Go, HTML, CSS)
-**AND** use VS Code-compatible color theme
-**AND** include line numbers (optional, configurable)
+**AND** use base16-gruvbox-dark-medium theme
+**AND** dynamically import highlight.js to avoid SSR issues
+**AND** run highlighting on document-ready to ensure DOM is available
 
 #### Scenario: Code block styling
 **GIVEN** a highlighted code block
 **WHEN** displaying the code
 **THEN** use monospace font from design system (--font-family-mono)
-**AND** apply background color distinguishing code from text
-**AND** ensure code is readable in both light and dark mode
+**AND** apply background color from highlight.js theme
+**AND** override default padding with custom spacing (--spacing-md vertical, --spacing-lg horizontal)
+**AND** ensure code is readable with gruvbox-dark-medium theme
 **AND** support horizontal scrolling for long lines
+**AND** apply border-radius for visual polish
 
 #### Scenario: Copy code button
 **GIVEN** a code block is displayed
@@ -142,10 +147,13 @@ The blog MUST display post metadata prominently.
 #### Scenario: Tag display
 **GIVEN** a post has tags ["rust", "webdev", "cloudflare"]
 **WHEN** displaying tags
-**THEN** render each tag as a badge/pill
-**AND** link each tag to `/tags/{tag}` page
-**AND** apply design system styling (background, padding, border-radius)
+**THEN** render each tag as flat text with middot separator (·)
+**AND** link each tag to `/?tags={tag}` for filtering
+**AND** apply subtle color (--color-text-secondary) with hover state (--color-text-link)
+**AND** add padding around tag links (--spacing-xs vertical, --spacing-sm horizontal)
+**AND** add padding to separators (--spacing-xs horizontal)
 **AND** ensure tags are keyboard accessible
+**AND** make tags clickable with pointer cursor
 
 #### Scenario: Date formatting
 **GIVEN** a post published date
@@ -244,9 +252,10 @@ The blog content rendering MUST be performant.
 #### Scenario: Lazy-load markdown renderer
 **GIVEN** the blog is built for production
 **WHEN** loading a post page
-**THEN** code-split markdown rendering library
-**AND** lazy-load syntax highlighter (Shiki)
-**AND** load only when post content is needed
+**THEN** code-split markdown rendering library (marked)
+**AND** dynamically import syntax highlighter (highlight.js) client-side
+**AND** load highlighting only when DOM is ready (useVisibleTask$)
+**AND** avoid SSR for syntax highlighting to prevent CPU time issues
 
 #### Scenario: Avoid layout shift
 **GIVEN** a post is loading

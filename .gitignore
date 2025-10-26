@@ -19,6 +19,8 @@ target/
 .DS_Store
 .claude/
 .wrangler/
+.cloudflare/
+blog/dist/
 
 # Editor directories
 .vscode/

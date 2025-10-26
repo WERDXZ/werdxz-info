@@ -1,0 +1,48 @@
+@import url('https://cloud.werdxz.info/shared/styles/variables.css');
+@import "highlight.js/styles/base16/gruvbox-dark-medium.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: var(--spacing-md);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  align-content: start;
+}
+
+a {
+  color: var(--color-text-link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Focus styles for keyboard navigation accessibility */
+*:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Mobile: single column grid */
+@media (max-width: 768px) {
+  body {
+    grid-template-columns: 1fr;
+    padding: 0 var(--spacing-md);
+  }
+}

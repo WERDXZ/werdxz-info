@@ -42,6 +42,8 @@
   --green: #52c41a;
   --red: #ff4d4f;
   --yellow: #faad14;
+  --orange: #fa8c16;
+  --purple: #8b5cf6;
 
   /* ========================================
      Base Semantic Colors
@@ -60,6 +62,14 @@
 
   --color-border-default: var(--gray-200);
   --color-border-subtle: var(--gray-200);
+
+  /* Status/State colors for badges, alerts, etc. */
+  --color-status-success: var(--green);
+  --color-status-info: var(--blue);
+  --color-status-warning: var(--orange);
+  --color-status-error: var(--red);
+  --color-status-neutral: var(--gray-400);
+  --color-status-purple: var(--purple);
 
   /* ========================================
      Typography - Font Families

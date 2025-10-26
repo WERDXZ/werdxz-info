@@ -1,5 +1,42 @@
 # Spec: Blog Posts API
 
+## MODIFIED Requirements
+
+**Note**: The following enhancements were added during blog frontend implementation to support search and tag filtering features.
+
+### Requirement: Search Posts
+The API MUST support searching posts by title and summary.
+
+#### Scenario: Search posts by keyword
+**GIVEN** posts with various titles and summaries
+**WHEN** GET /v1/posts?search=rust is requested
+**THEN** respond with 200 OK
+**AND** return posts where title OR summary contains "rust" (case-insensitive LIKE query)
+**AND** use parameterized queries to prevent SQL injection
+**AND** include pagination metadata for search results
+
+### Requirement: Get All Tags with Counts
+The API MUST provide an endpoint to list all tags with usage counts.
+
+#### Scenario: List all tags
+**GIVEN** posts tagged with various tags
+**WHEN** GET /v1/tags is requested
+**THEN** respond with 200 OK
+**AND** return array of `{tag: string, count: number}` objects
+**AND** include count of posts using each tag
+**AND** order by tag name alphabetically
+
+### Requirement: SQL Injection Prevention
+The API MUST prevent SQL injection attacks through parameterized queries.
+
+#### Scenario: Branching query pattern
+**GIVEN** posts list with optional filters (tags, search)
+**WHEN** building SQL queries dynamically
+**THEN** use separate prepared statements for each filter combination (NoFilters, TagsOnly, SearchOnly, TagsAndSearch)
+**AND** bind all user input via `?` placeholders
+**AND** never concatenate user input into SQL strings
+**AND** use JSON arrays for multiple tag filtering via `json_each(?)`
+
 ## ADDED Requirements
 
 ### Requirement: List Blog Posts

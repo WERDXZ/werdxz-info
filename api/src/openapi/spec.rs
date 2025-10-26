@@ -1,6 +1,7 @@
 use utoipa::OpenApi;
 use crate::models::post::{Post, PostListItem, PostsResponse, Pagination};
 use crate::models::resume::{Resume, Personal, Experience, Education, Project, Extracurricular};
+use crate::models::tag::TagWithCount;
 use crate::routes::meta::{HealthResponse, ServiceStatus, ApiInfoResponse, ApiEndpoints};
 
 #[derive(OpenApi)]
@@ -23,6 +24,7 @@ use crate::routes::meta::{HealthResponse, ServiceStatus, ApiInfoResponse, ApiEnd
         crate::routes::meta::handle_health,
         crate::routes::posts::handle_list_posts,
         crate::routes::posts::handle_get_post,
+        crate::routes::posts::handle_get_tags,
         crate::routes::resume::handle_get_resume,
     ),
     components(
@@ -31,6 +33,7 @@ use crate::routes::meta::{HealthResponse, ServiceStatus, ApiInfoResponse, ApiEnd
             PostListItem,
             PostsResponse,
             Pagination,
+            TagWithCount,
             Resume,
             Personal,
             Experience,

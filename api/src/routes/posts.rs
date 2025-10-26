@@ -1,6 +1,7 @@
 use worker::*;
 use crate::storage::d1::ListPostsParams;
 use crate::storage::blog::{list_posts_with_pagination, get_full_post};
+use crate::storage::d1::get_all_tags as d1_get_all_tags;
 use crate::errors::ApiError;
 use crate::models::tag::Tag;
 
@@ -13,6 +14,7 @@ use crate::models::tag::Tag;
         ("page" = Option<u32>, Query, description = "Page number (default: 1)"),
         ("limit" = Option<u32>, Query, description = "Items per page (default: 10, max: 50)"),
         ("tags" = Option<String>, Query, description = "Filter by tags (comma-separated)"),
+        ("search" = Option<String>, Query, description = "Search in title and summary"),
         ("sort" = Option<String>, Query, description = "Sort field: published_at or title (default: published_at)"),
         ("order" = Option<String>, Query, description = "Sort order: asc or desc (default: desc)"),
     ),
@@ -116,6 +118,11 @@ fn parse_list_params(url: &Url) -> ListPostsParams {
                     params.tags = Some(tags.iter().map(|t| t.to_string()).collect());
                 }
             }
+            "search" => {
+                if !value.is_empty() {
+                    params.search = Some(value.to_string());
+                }
+            }
             "sort" => {
                 params.sort_by = crate::storage::d1::SortField::from_str(&value);
             }
@@ -205,5 +212,30 @@ mod tests {
         // Should use defaults when parsing fails
         assert_eq!(params.page, 1);
         assert_eq!(params.limit, 10);
+    }
+}
+
+/// Get all available tags with usage counts
+#[utoipa::path(
+    get,
+    path = "/v1/tags",
+    tag = "posts",
+    responses(
+        (status = 200, description = "List of all tags with usage counts", body = Vec<crate::models::tag::TagWithCount>)
+    )
+)]
+pub async fn handle_get_tags(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
+    // Get D1 database binding
+    let db = ctx.env.d1("DB")?;
+
+    // Query all tags with counts
+    match d1_get_all_tags(&db).await {
+        Ok(tags) => Response::from_json(&tags),
+        Err(_e) => {
+            // Log detailed error server-side (when error logging is fully implemented)
+            // console_error!("Failed to list tags: {:?}", e);
+            let error = ApiError::internal_error("Unable to load tags");
+            error.to_response(500)
+        }
     }
 }

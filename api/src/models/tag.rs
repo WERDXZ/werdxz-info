@@ -1,4 +1,5 @@
 use std::ops::Deref;
+use serde::{Deserialize, Serialize};
 
 /// Validated tag wrapper
 ///
@@ -8,6 +9,13 @@ use std::ops::Deref;
 /// - Alphanumeric, hyphens, and underscores only
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Tag(String);
+
+/// Tag with usage count for API responses
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+pub struct TagWithCount {
+    pub tag: String,
+    pub count: u32,
+}
 
 impl Tag {
     /// Maximum length for a tag

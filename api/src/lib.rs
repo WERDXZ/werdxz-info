@@ -42,6 +42,7 @@ async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         .get_async("/v1/health", |req, ctx| async move { routes::meta::handle_health(req, ctx).await })
         .get_async("/v1/posts", |req, ctx| async move { routes::posts::handle_list_posts(req, ctx).await })
         .get_async("/v1/posts/:slug", |req, ctx| async move { routes::posts::handle_get_post(req, ctx).await })
+        .get_async("/v1/tags", |req, ctx| async move { routes::posts::handle_get_tags(req, ctx).await })
         .get_async("/v1/resume", |req, ctx| async move { routes::resume::handle_get_resume(req, ctx).await })
 
         .run(req, env)

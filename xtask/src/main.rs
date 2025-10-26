@@ -460,10 +460,14 @@ fn publish_post(
     let external_url_str = external_url.map(|s| format!(", '{}'", s)).unwrap_or_else(|| ", NULL".to_string());
 
     // Insert post without tags (tags will be handled separately)
+    // Escape single quotes in SQL strings by doubling them
+    let escaped_title = title.replace('\'', "''");
+    let escaped_summary = summary_str.replace('\'', "''");
+
     let sql = format!(
         "INSERT INTO posts (content_id, slug, title, summary, published_at, external_url) \
          VALUES ('{}', '{}', '{}', '{}', datetime('now'){});",
-        content_id, slug, title, summary_str, external_url_str
+        content_id, slug, escaped_title, escaped_summary, external_url_str
     );
 
     let mut db_cmd = Command::new("npx");

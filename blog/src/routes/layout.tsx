@@ -10,9 +10,14 @@ export default component$(() => {
           <Link href="/" class={styles.logo}>
             werdxz / blog
           </Link>
-          <a href="https://werdxz.info" class={styles.homeLink}>
-            Home
-          </a>
+          <div class={styles.navLinks}>
+            <a href="https://werdxz.info" class={styles.navLink}>
+              Home
+            </a>
+            <a href="https://projects.werdxz.info" class={styles.navLink}>
+              Projects
+            </a>
+          </div>
         </nav>
       </header>
 

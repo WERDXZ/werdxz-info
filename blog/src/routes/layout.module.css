@@ -24,13 +24,19 @@
   color: var(--color-text-link);
 }
 
-.homeLink {
+.navLinks {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.navLink {
   color: var(--color-text-secondary);
   font-size: var(--font-size-base);
   text-decoration: none;
 }
 
-.homeLink:hover {
+.navLink:hover {
   color: var(--color-text-link);
 }
 

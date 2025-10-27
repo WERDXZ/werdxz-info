@@ -69,7 +69,7 @@ export default define.page(async function ProjectDetail(ctx) {
               </div>
               <p class="project-description">{project.description}</p>
 
-              {project.tags.length > 0 && (
+              {project.tags && project.tags.length > 0 && (
                 <ul class="tags">
                   {project.tags.map((tag) => (
                     <li key={tag} class="tag">{tag}</li>
@@ -77,19 +77,21 @@ export default define.page(async function ProjectDetail(ctx) {
                 </ul>
               )}
 
-              <nav class="project-urls" aria-label="Project links">
-                {project.urls.map((url) => (
-                  <a
-                    key={url.label}
-                    href={url.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="url-link"
-                  >
-                    {url.label} →
-                  </a>
-                ))}
-              </nav>
+              {project.urls && project.urls.length > 0 && (
+                <nav class="project-urls" aria-label="Project links">
+                  {project.urls.map((url) => (
+                    <a
+                      key={url.label}
+                      href={url.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="url-link"
+                    >
+                      {url.label} →
+                    </a>
+                  ))}
+                </nav>
+              )}
             </header>
 
             <section class="readme-content" dangerouslySetInnerHTML={{ __html: markdownToHTML(readme) }} />

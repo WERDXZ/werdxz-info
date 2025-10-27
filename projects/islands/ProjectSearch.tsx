@@ -38,7 +38,7 @@ export default function ProjectSearch({ projects, initialQuery = "" }: ProjectSe
     return (
       project.name.toLowerCase().includes(query) ||
       project.description.toLowerCase().includes(query) ||
-      project.tags.some(tag => tag.toLowerCase().includes(query))
+      (project.tags && project.tags.some(tag => tag.toLowerCase().includes(query)))
     );
   });
 
@@ -86,7 +86,7 @@ function ProjectCard({ project }: { project: Project }) {
 
         <p class="project-description">{project.description}</p>
 
-        {project.tags.length > 0 && (
+        {project.tags && project.tags.length > 0 && (
           <ul class="tags">
             {project.tags.map((tag) => (
               <li key={tag} class="tag">{tag}</li>
@@ -95,19 +95,21 @@ function ProjectCard({ project }: { project: Project }) {
         )}
       </a>
 
-      <nav class="project-urls" aria-label="Project links">
-        {project.urls.map((url) => (
-          <a
-            key={url.label}
-            href={url.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="url-link"
-          >
-            {url.label} →
-          </a>
-        ))}
-      </nav>
+      {project.urls && project.urls.length > 0 && (
+        <nav class="project-urls" aria-label="Project links">
+          {project.urls.map((url) => (
+            <a
+              key={url.label}
+              href={url.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="url-link"
+            >
+              {url.label} →
+            </a>
+          ))}
+        </nav>
+      )}
     </article>
   );
 }

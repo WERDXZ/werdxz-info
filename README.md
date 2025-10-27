@@ -1,60 +1,56 @@
-# Mono Repo for [werdxz.info](https://werdxz.info)
+# werdxz.info
 
-## Structure
+Monorepo for my personal website, blog, portfolio, and API backend.
 
-- `www/`: The home page of my website (pure HTML/CSS)
-- `shared/styles/`: Shared CSS primitives and design tokens (committed to git)
-- `wrangler.toml`: Root config for Cloudflare resources (R2 buckets, etc.)
+## Projects
 
-## Setup for New Developers
+### `www/` - Homepage
+Pure HTML/CSS static homepage served via Cloudflare Pages.
 
-1. Clone the repository
-2. Install dependencies: `cd www && npm install`
-3. Run `npm run dev` in `www/` to start development server
+**Tech Stack:** HTML, CSS, Cloudflare Pages
 
-### Optional: Git Hooks for R2 Content Sync
+### `api/` - API Backend
+RESTful API backend for blog posts, resume data, and portfolio projects.
 
-4. Authenticate with Cloudflare: `npx wrangler login`
-5. Run `./scripts/setup-hooks.sh` to install git hooks
-6. Git hooks will automatically sync content to R2 buckets:
-   - `cloud` - Public bucket for images, media, fonts
-   - `private` - Private bucket for HTML files
+**Tech Stack:** Rust, Cloudflare Workers, Cloudflare D1 (SQLite), Cloudflare R2 (S3-compatible storage)
 
-### Deployment to Cloudflare
+### `blog/` - Blog Frontend
+SSR blog with islands architecture for interactive components.
 
-Each app has its own `wrangler.toml` for deployment:
+**Tech Stack:** Deno Fresh, TypeScript, Preact, Cloudflare Pages
 
+### `xtask/` - CLI Tooling
+Cargo xtask automation for managing blog posts and projects.
+
+**Tech Stack:** Rust, cargo-xtask pattern
+
+### `shared/` - Shared Design System
+CSS primitives, design tokens, and shared styles accessible via CDN.
+
+**Tech Stack:** CSS Variables
+
+## CLI Commands
+
+**Manage blog posts:**
 ```bash
-# One-time: Login to Cloudflare
-npx wrangler login
-
-# Deploy www (homepage)
-cd www && npm run deploy
-
-# List R2 buckets
-npx wrangler r2 bucket list
+cargo xtask blog publish --slug "my-post" --title "My Post" blog/my-post.md
+cargo xtask blog list
+cargo xtask blog delete --slug "my-post"
 ```
 
-### What's in Git vs R2 Buckets?
+**Manage projects:**
+```bash
+cargo xtask projects create \
+  --slug "my-project" \
+  --name "My Project" \
+  --description "A cool project" \
+  --stage "active" \
+  --readme-url "https://github.com/user/repo"
 
-**Committed to Git (source code) AND R2 `cloud` bucket:**
-- Shared files (`shared/styles/`) - Git for version control, `cloud` bucket for public CDN access
-- Configuration files (`wrangler.toml`, `package.json`)
-- Documentation
+cargo xtask projects list
+cargo xtask projects delete --slug "my-project"
+```
 
-**Git ignored, R2 `private` bucket (sync only, no git bloat):**
-- HTML files (`www/public/*.html`)
-- Images (`www/public/images/`)
-- Media files (`www/public/media/`)
-- Fonts (`www/public/fonts/`)
-- Any frequently changing content
+## License
 
-**Bucket Strategy:**
-- `cloud` - **Public**: Only `shared/` files that all frontends need to access via CDN
-- `private` - **Private**: Everything else, just for sync to avoid bloating git history
-
-**Why this split?**
-- Shared CSS in `cloud` bucket: All frontends can `@import url('https://cloud.werdxz.info/shared/styles/variables.css')`
-- App-specific files in `private` bucket: Synced locally via git hooks, no commit history bloat
-
-For more details on the shared design system, see `shared/styles/README.md`
+MIT

@@ -27,7 +27,7 @@
   align-items: center;
 }
 
-.postsSection {
+.blogsSection {
   grid-column: 3 / 7;
 }
 
@@ -80,18 +80,18 @@
   border-bottom-color: var(--color-accent-primary);
 }
 
-.postsList {
+.blogsList {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.postsList > li:not(:last-child) {
+.blogsList > li:not(:last-child) {
   border-bottom: 1px solid var(--color-border-subtle);
   transition: border-color 0.2s ease;
 }
 
-.postsList > li:not(:last-child):hover {
+.blogsList > li:not(:last-child):hover {
   border-bottom-color: var(--color-border-default);
 }
 
@@ -148,7 +148,7 @@
     grid-template-columns: 1fr;
   }
 
-  .postsSection {
+  .blogsSection {
     grid-column: 1 / -1;
   }
 

@@ -1,22 +1,22 @@
 import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { fetchPosts, fetchTags } from "~/lib/api";
-import type { Post } from "~/lib/api";
-import { PostCard } from "~/components/post-card/post-card";
+import { fetchBlogs, fetchTags } from "~/lib/api";
+import type { Blog } from "~/lib/api";
+import { BlogCard } from "~/components/blog-card/blog-card";
 import styles from "./index.module.css";
 
-export const usePosts = routeLoader$(async ({ url }) => {
+export const useBlogs = routeLoader$(async ({ url }) => {
   const tags = url.searchParams.get('tags') || undefined;
   const search = url.searchParams.get('search') || undefined;
 
   try {
-    const data = await fetchPosts({ limit: 10, page: 1, tags, search });
+    const data = await fetchBlogs({ limit: 10, page: 1, tags, search });
     return { ...data, filters: { tags, search } };
   } catch (error) {
-    console.error("[SSR] Failed to fetch posts:", error);
+    console.error("[SSR] Failed to fetch blogs:", error);
     return {
-      posts: [],
+      blogs: [],
       pagination: {
         page: 1,
         limit: 10,
@@ -38,9 +38,9 @@ export const useTags = routeLoader$(async () => {
 });
 
 export default component$(() => {
-  const initialData = usePosts();
+  const initialData = useBlogs();
   const availableTags = useTags();
-  const allPosts = useSignal<Post[]>(initialData.value.posts);
+  const allBlogs = useSignal<Blog[]>(initialData.value.blogs);
   const currentPage = useSignal(1);
   const hasMore = useSignal(initialData.value.pagination.has_next);
   const isLoading = useSignal(false);
@@ -51,7 +51,7 @@ export default component$(() => {
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(
     ({ track, cleanup }) => {
-      track(() => allPosts.value);
+      track(() => allBlogs.value);
 
       if (typeof window === 'undefined') return;
 
@@ -77,7 +77,7 @@ export default component$(() => {
       sentinel.id = 'infinite-scroll-sentinel';
       sentinel.style.height = '1px';
 
-      const loadMorePosts = async () => {
+      const loadMoreBlogs = async () => {
         // Prevent race conditions by checking and setting in one operation
         if (isLoading.value || !hasMore.value) return;
         isLoading.value = true;
@@ -86,7 +86,7 @@ export default component$(() => {
         const nextPage = currentPage.value + 1;
 
         try {
-          const data = await fetchPosts({
+          const data = await fetchBlogs({
             limit: 10,
             page: nextPage,
             tags: currentTags.value,
@@ -94,11 +94,11 @@ export default component$(() => {
           });
 
           // Use concat instead of spread for better performance
-          allPosts.value = allPosts.value.concat(data.posts);
+          allBlogs.value = allBlogs.value.concat(data.blogs);
           currentPage.value = nextPage;
           hasMore.value = data.pagination.has_next;
         } catch (error) {
-          console.error('[Client] Failed to load more posts:', error);
+          console.error('[Client] Failed to load more blogs:', error);
         } finally {
           isLoading.value = false;
         }
@@ -107,21 +107,21 @@ export default component$(() => {
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            loadMorePosts();
+            loadMoreBlogs();
           }
         },
         { rootMargin: '300px' }
       );
 
       // Insert sentinel before loading indicator
-      const postsSection = document.querySelector(`.${styles.postsList}`);
-      if (!postsSection?.parentElement) {
-        // Cleanup if we can't find the posts section
+      const blogsSection = document.querySelector(`.${styles.blogsList}`);
+      if (!blogsSection?.parentElement) {
+        // Cleanup if we can't find the blogs section
         observer.disconnect();
         return;
       }
 
-      postsSection.parentElement.insertBefore(sentinel, postsSection.nextSibling);
+      blogsSection.parentElement.insertBefore(sentinel, blogsSection.nextSibling);
       observer.observe(sentinel);
 
       cleanup(() => {
@@ -153,8 +153,8 @@ export default component$(() => {
     currentSearch.value = search;
 
     try {
-      const data = await fetchPosts({ limit: 10, page: 1, tags, search });
-      allPosts.value = data.posts;
+      const data = await fetchBlogs({ limit: 10, page: 1, tags, search });
+      allBlogs.value = data.blogs;
       currentPage.value = 1;
       hasMore.value = data.pagination.has_next;
     } catch (error) {
@@ -170,7 +170,7 @@ export default component$(() => {
         <form class={styles.filters} preventdefault:submit>
           <input
             type="search"
-            placeholder="Search posts..."
+            placeholder="Search blog posts..."
             value={currentSearch.value || ''}
             onInput$={(e) => {
               const value = (e.target as HTMLInputElement).value;
@@ -187,7 +187,7 @@ export default component$(() => {
               }, 300) as unknown as number;
             }}
             class={styles.searchInput}
-            aria-label="Search posts"
+            aria-label="Search blog posts"
           />
 
           <label for="tag-select" class={styles.tagLabel}>Filter by tag:</label>
@@ -210,14 +210,14 @@ export default component$(() => {
         </form>
       </section>
 
-      <section class={styles.postsSection}>
-        {allPosts.value.length === 0 ? (
-          <p class={styles.emptyState}>No posts yet. Check back soon!</p>
+      <section class={styles.blogsSection}>
+        {allBlogs.value.length === 0 ? (
+          <p class={styles.emptyState}>No blog posts yet. Check back soon!</p>
         ) : (
-          <ul class={styles.postsList}>
-            {allPosts.value.map((post) => (
-              <li key={post.slug}>
-                <PostCard post={post} />
+          <ul class={styles.blogsList}>
+            {allBlogs.value.map((blog) => (
+              <li key={blog.slug}>
+                <BlogCard blog={blog} />
               </li>
             ))}
           </ul>
@@ -226,11 +226,11 @@ export default component$(() => {
 
       {isLoading.value && (
         <section class={styles.loadingSection}>
-          <p class={styles.loadingIndicator}>Loading more posts...</p>
+          <p class={styles.loadingIndicator}>Loading more blog posts...</p>
         </section>
       )}
 
-      {!hasMore.value && allPosts.value.length > 0 && (
+      {!hasMore.value && allBlogs.value.length > 0 && (
         <section class={styles.endSection}>
           <p class={styles.endMessage}>You've reached the end!</p>
         </section>

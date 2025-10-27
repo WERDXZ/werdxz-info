@@ -2,31 +2,31 @@ import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { fetchPost } from "~/lib/api";
-import { formatPostDate } from "~/lib/date";
+import { fetchBlog } from "~/lib/api";
+import { formatBlogDate } from "~/lib/date";
 import { renderMarkdown } from "~/lib/markdown";
 import styles from "./index.module.css";
 
-export const usePost = routeLoader$(async ({ params, status }) => {
+export const useBlog = routeLoader$(async ({ params, status }) => {
   try {
-    const post = await fetchPost(params.slug);
+    const blog = await fetchBlog(params.slug);
 
     let htmlContent = "";
-    if (post.content) {
-      htmlContent = await renderMarkdown(post.content);
+    if (blog.content) {
+      htmlContent = await renderMarkdown(blog.content);
     }
 
-    return { post, htmlContent };
+    return { blog, htmlContent };
   } catch (error) {
-    console.error("[SSR] Failed to fetch post:", params.slug, error);
+    console.error("[SSR] Failed to fetch blog:", params.slug, error);
     status(404);
     return null;
   }
 });
 
 export default component$(() => {
-  const postSignal = usePost();
-  const data = postSignal.value;
+  const blogSignal = useBlog();
+  const data = blogSignal.value;
 
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
@@ -44,8 +44,8 @@ export default component$(() => {
   if (!data) {
     return (
       <section class={styles.notFound}>
-        <h1>Post Not Found</h1>
-        <p>Sorry, the post you're looking for doesn't exist.</p>
+        <h1>Blog Post Not Found</h1>
+        <p>Sorry, the blog post you're looking for doesn't exist.</p>
         <Link href="/" class={styles.backLink}>
           ← Back to Blog
         </Link>
@@ -53,8 +53,8 @@ export default component$(() => {
     );
   }
 
-  const { post, htmlContent} = data;
-  const date = formatPostDate(post.published_at);
+  const { blog, htmlContent} = data;
+  const date = formatBlogDate(blog.published_at);
 
   return (
     <article>
@@ -63,20 +63,20 @@ export default component$(() => {
       </Link>
 
       <header class={styles.header}>
-        <h1 class={styles.title}>{post.title}</h1>
+        <h1 class={styles.title}>{blog.title}</h1>
         <p class={styles.meta}>
-          <time class={styles.date} dateTime={post.published_at}>
+          <time class={styles.date} dateTime={blog.published_at}>
             {date}
           </time>
-          {post.read_time_minutes && (
+          {blog.read_time_minutes && (
             <span class={styles.readTime}>
-              {post.read_time_minutes} min read
+              {blog.read_time_minutes} min read
             </span>
           )}
         </p>
-        {post.tags && post.tags.length > 0 && (
+        {blog.tags && blog.tags.length > 0 && (
           <ul class={styles.tags}>
-            {post.tags.map((tag) => (
+            {blog.tags.map((tag) => (
               <li key={tag} class={styles.tag}>
                 <Link href={`/?tags=${tag}`}>{tag}</Link>
               </li>
@@ -91,28 +91,28 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = ({ resolveValue }) => {
-  const data = resolveValue(usePost);
+  const data = resolveValue(useBlog);
   if (!data) {
     return {
-      title: "Post Not Found | werdxz.info",
+      title: "Blog Post Not Found | werdxz.info",
     };
   }
 
-  const { post } = data;
+  const { blog } = data;
   return {
-    title: `${post.title} | werdxz.info`,
+    title: `${blog.title} | werdxz.info`,
     meta: [
       {
         name: "description",
-        content: post.summary,
+        content: blog.summary,
       },
       {
         property: "og:title",
-        content: post.title,
+        content: blog.title,
       },
       {
         property: "og:description",
-        content: post.summary,
+        content: blog.summary,
       },
       {
         property: "og:type",
@@ -120,9 +120,9 @@ export const head: DocumentHead = ({ resolveValue }) => {
       },
       {
         property: "article:published_time",
-        content: post.published_at,
+        content: blog.published_at,
       },
-      ...(post.tags?.map((tag) => ({
+      ...(blog.tags?.map((tag) => ({
         property: "article:tag",
         content: tag,
       })) || []),

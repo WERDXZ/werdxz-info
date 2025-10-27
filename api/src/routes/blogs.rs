@@ -1,6 +1,6 @@
 use worker::*;
-use crate::storage::d1::ListPostsParams;
-use crate::storage::blog::{list_posts_with_pagination, get_full_post};
+use crate::storage::d1::ListBlogsParams;
+use crate::storage::blog::{list_blogs_with_pagination, get_full_blog};
 use crate::storage::d1::get_all_tags as d1_get_all_tags;
 use crate::errors::ApiError;
 use crate::models::tag::Tag;
@@ -8,8 +8,8 @@ use crate::models::tag::Tag;
 /// List blog posts with pagination and filtering
 #[utoipa::path(
     get,
-    path = "/v1/posts",
-    tag = "posts",
+    path = "/v1/blogs",
+    tag = "blogs",
     params(
         ("page" = Option<u32>, Query, description = "Page number (default: 1)"),
         ("limit" = Option<u32>, Query, description = "Items per page (default: 10, max: 50)"),
@@ -19,10 +19,10 @@ use crate::models::tag::Tag;
         ("order" = Option<String>, Query, description = "Sort order: asc or desc (default: desc)"),
     ),
     responses(
-        (status = 200, description = "List of blog posts", body = crate::models::post::PostsResponse)
+        (status = 200, description = "List of blog posts", body = crate::models::blog::BlogsResponse)
     )
 )]
-pub async fn handle_list_posts(req: Request, ctx: RouteContext<()>) -> Result<Response> {
+pub async fn handle_list_blogs(req: Request, ctx: RouteContext<()>) -> Result<Response> {
     // Get D1 database binding
     let db = ctx.env.d1("DB")?;
 
@@ -30,13 +30,13 @@ pub async fn handle_list_posts(req: Request, ctx: RouteContext<()>) -> Result<Re
     let url = req.url()?;
     let params = parse_list_params(&url);
 
-    // Query posts
-    match list_posts_with_pagination(&db, &params).await {
+    // Query blogs
+    match list_blogs_with_pagination(&db, &params).await {
         Ok(response) => Response::from_json(&response),
         Err(_e) => {
             // Log detailed error server-side (when error logging is fully implemented)
-            // console_error!("Failed to list posts: {:?}", e);
-            let error = ApiError::internal_error("Unable to load posts");
+            // console_error!("Failed to list blogs: {:?}", e);
+            let error = ApiError::internal_error("Unable to load blogs");
             error.to_response(500)
         }
     }
@@ -45,23 +45,23 @@ pub async fn handle_list_posts(req: Request, ctx: RouteContext<()>) -> Result<Re
 /// Get a single blog post by slug
 #[utoipa::path(
     get,
-    path = "/v1/posts/{slug}",
-    tag = "posts",
+    path = "/v1/blogs/{slug}",
+    tag = "blogs",
     params(
-        ("slug" = String, Path, description = "URL slug of the post")
+        ("slug" = String, Path, description = "URL slug of the blog post")
     ),
     responses(
-        (status = 200, description = "Full blog post with content", body = crate::models::post::Post),
+        (status = 200, description = "Full blog post with content", body = crate::models::blog::Blog),
         (status = 400, description = "Invalid slug format"),
-        (status = 404, description = "Post not found")
+        (status = 404, description = "Blog post not found")
     )
 )]
-pub async fn handle_get_post(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
+pub async fn handle_get_blog(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
     let slug = ctx.param("slug").ok_or_else(|| Error::RustError("Missing slug".to_string()))?;
 
     // Validate slug format (security: prevent path traversal, SQL injection attempts)
     if !is_valid_slug(slug) {
-        let error = ApiError::bad_request("Invalid post slug format");
+        let error = ApiError::bad_request("Invalid blog slug format");
         return error.to_response(400);
     }
 
@@ -69,17 +69,17 @@ pub async fn handle_get_post(_req: Request, ctx: RouteContext<()>) -> Result<Res
     let db = ctx.env.d1("DB")?;
     let bucket = ctx.env.bucket("CONTENT_BUCKET")?;
 
-    // Get post with content
-    match get_full_post(&db, &bucket, slug).await {
-        Ok(Some(post)) => Response::from_json(&post),
+    // Get blog with content
+    match get_full_blog(&db, &bucket, slug).await {
+        Ok(Some(blog)) => Response::from_json(&blog),
         Ok(None) => {
-            let error = ApiError::not_found("Post");
+            let error = ApiError::not_found("Blog");
             error.to_response(404)
         }
         Err(e) => {
             // Log detailed error server-side
-            console_error!("Failed to get post '{}': {:?}", slug, e);
-            let error = ApiError::internal_error("Unable to load post");
+            console_error!("Failed to get blog '{}': {:?}", slug, e);
+            let error = ApiError::internal_error("Unable to load blog");
             error.to_response(500)
         }
     }
@@ -95,10 +95,10 @@ fn is_valid_slug(slug: &str) -> bool {
 }
 
 /// Parse query parameters for list endpoint
-fn parse_list_params(url: &Url) -> ListPostsParams {
+fn parse_list_params(url: &Url) -> ListBlogsParams {
     let query_pairs = url.query_pairs();
 
-    let mut params = ListPostsParams::default();
+    let mut params = ListBlogsParams::default();
 
     for (key, value) in query_pairs {
         match key.as_ref() {
@@ -154,13 +154,13 @@ mod tests {
         assert!(!is_valid_slug("slug with spaces")); // Spaces
         assert!(!is_valid_slug("slug/with/slashes")); // Slashes
         assert!(!is_valid_slug("slug.with.dots")); // Dots
-        assert!(!is_valid_slug("'; DROP TABLE posts; --")); // SQL injection attempt
+        assert!(!is_valid_slug("'; DROP TABLE blogs; --")); // SQL injection attempt
         assert!(!is_valid_slug(&"a".repeat(101))); // Too long (> 100 chars)
     }
 
     #[test]
     fn test_parse_list_params_defaults() {
-        let url = Url::parse("http://example.com/posts").unwrap();
+        let url = Url::parse("http://example.com/blogs").unwrap();
         let params = parse_list_params(&url);
 
         assert_eq!(params.page, 1);
@@ -170,7 +170,7 @@ mod tests {
 
     #[test]
     fn test_parse_list_params_with_values() {
-        let url = Url::parse("http://example.com/posts?page=2&limit=20&tags=rust,webdev").unwrap();
+        let url = Url::parse("http://example.com/blogs?page=2&limit=20&tags=rust,webdev").unwrap();
         let params = parse_list_params(&url);
 
         assert_eq!(params.page, 2);
@@ -180,7 +180,7 @@ mod tests {
 
     #[test]
     fn test_parse_list_params_filters_invalid_tags() {
-        let url = Url::parse("http://example.com/posts?tags=rust,invalid tag,python,../../etc/passwd").unwrap();
+        let url = Url::parse("http://example.com/blogs?tags=rust,invalid tag,python,../../etc/passwd").unwrap();
         let params = parse_list_params(&url);
 
         // Only valid tags should be included
@@ -190,23 +190,23 @@ mod tests {
     #[test]
     fn test_parse_list_params_limits() {
         // Page minimum
-        let url = Url::parse("http://example.com/posts?page=0").unwrap();
+        let url = Url::parse("http://example.com/blogs?page=0").unwrap();
         let params = parse_list_params(&url);
         assert_eq!(params.page, 1);
 
         // Limit minimum and maximum
-        let url = Url::parse("http://example.com/posts?limit=0").unwrap();
+        let url = Url::parse("http://example.com/blogs?limit=0").unwrap();
         let params = parse_list_params(&url);
         assert_eq!(params.limit, 1);
 
-        let url = Url::parse("http://example.com/posts?limit=999").unwrap();
+        let url = Url::parse("http://example.com/blogs?limit=999").unwrap();
         let params = parse_list_params(&url);
         assert_eq!(params.limit, 50); // Clamped to max
     }
 
     #[test]
     fn test_parse_list_params_invalid_values() {
-        let url = Url::parse("http://example.com/posts?page=invalid&limit=bad").unwrap();
+        let url = Url::parse("http://example.com/blogs?page=invalid&limit=bad").unwrap();
         let params = parse_list_params(&url);
 
         // Should use defaults when parsing fails
@@ -219,7 +219,7 @@ mod tests {
 #[utoipa::path(
     get,
     path = "/v1/tags",
-    tag = "posts",
+    tag = "blogs",
     responses(
         (status = 200, description = "List of all tags with usage counts", body = Vec<crate::models::tag::TagWithCount>)
     )

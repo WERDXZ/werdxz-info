@@ -1,4 +1,4 @@
-export interface Post {
+export interface Blog {
   slug: string;
   title: string;
   summary: string;
@@ -8,8 +8,8 @@ export interface Post {
   read_time_minutes?: number;
 }
 
-export interface PostsResponse {
-  posts: Post[];
+export interface BlogsResponse {
+  blogs: Blog[];
   pagination: {
     page: number;
     limit: number;

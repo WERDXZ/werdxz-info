@@ -16,7 +16,7 @@ where
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct Post {
+pub struct Blog {
     pub content_id: String,
     pub slug: String,
     pub title: String,
@@ -34,7 +34,7 @@ pub struct Post {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct PostListItem {
+pub struct BlogListItem {
     pub slug: String,
     pub title: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -49,8 +49,8 @@ pub struct PostListItem {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct PostsResponse {
-    pub posts: Vec<PostListItem>,
+pub struct BlogsResponse {
+    pub blogs: Vec<BlogListItem>,
     pub pagination: Pagination,
 }
 

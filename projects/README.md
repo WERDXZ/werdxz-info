@@ -1,17 +1,19 @@
-# Fresh project
+# werdxz / projects
 
-Your new Fresh project is ready to go. You can follow the Fresh "Getting
-Started" guide here: https://fresh.deno.dev/docs/getting-started
+Projects showcase site built with Deno Fresh and deployed to Cloudflare Workers.
 
-### Usage
+## Development
 
-Make sure to install Deno:
-https://docs.deno.com/runtime/getting_started/installation
+Start the development server:
 
-Then start the project in development mode:
-
-```
+```bash
 deno task dev
 ```
 
-This will watch the project directory and restart as necessary.
+## Deployment
+
+Deploy to Cloudflare Workers:
+
+```bash
+deno task deploy
+```

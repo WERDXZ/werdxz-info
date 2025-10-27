@@ -1,5 +1,6 @@
 use utoipa::OpenApi;
-use crate::models::post::{Post, PostListItem, PostsResponse, Pagination};
+use crate::models::blog::{Blog, BlogListItem, BlogsResponse, Pagination};
+use crate::models::project::{Project as ProjectModel, ProjectUrl, ProjectsResponse};
 use crate::models::resume::{Resume, Personal, Experience, Education, Project, Extracurricular};
 use crate::models::tag::TagWithCount;
 use crate::routes::meta::{HealthResponse, ServiceStatus, ApiInfoResponse, ApiEndpoints};
@@ -22,18 +23,23 @@ use crate::routes::meta::{HealthResponse, ServiceStatus, ApiInfoResponse, ApiEnd
     paths(
         crate::routes::meta::handle_root,
         crate::routes::meta::handle_health,
-        crate::routes::posts::handle_list_posts,
-        crate::routes::posts::handle_get_post,
-        crate::routes::posts::handle_get_tags,
+        crate::routes::blogs::handle_list_blogs,
+        crate::routes::blogs::handle_get_blog,
+        crate::routes::blogs::handle_get_tags,
+        crate::routes::projects::handle_list_projects,
+        crate::routes::projects::handle_get_project,
         crate::routes::resume::handle_get_resume,
     ),
     components(
         schemas(
-            Post,
-            PostListItem,
-            PostsResponse,
+            Blog,
+            BlogListItem,
+            BlogsResponse,
             Pagination,
             TagWithCount,
+            ProjectModel,
+            ProjectUrl,
+            ProjectsResponse,
             Resume,
             Personal,
             Experience,
@@ -48,7 +54,8 @@ use crate::routes::meta::{HealthResponse, ServiceStatus, ApiInfoResponse, ApiEnd
     ),
     tags(
         (name = "meta", description = "API metadata and health endpoints"),
-        (name = "posts", description = "Blog post management"),
+        (name = "blogs", description = "Blog post management"),
+        (name = "projects", description = "Open-source projects and documentation"),
         (name = "resume", description = "Resume data and filtering")
     )
 )]

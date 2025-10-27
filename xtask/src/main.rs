@@ -110,11 +110,11 @@ enum BlogCommands {
         /// Path to markdown file
         file: String,
 
-        /// URL slug for the post
+        /// URL slug for the blog post
         #[arg(long)]
         slug: String,
 
-        /// Post title
+        /// Blog post title
         #[arg(long)]
         title: String,
 
@@ -233,10 +233,10 @@ fn main() -> Result<()> {
         },
         Commands::Blog { command } => match command {
             BlogCommands::Publish { file, slug, title, summary, tags, external_url, remote } => {
-                publish_post(&workspace_root, &file, &slug, &title, summary.as_deref(), tags.as_deref(), external_url.as_deref(), remote)
+                publish_blog(&workspace_root, &file, &slug, &title, summary.as_deref(), tags.as_deref(), external_url.as_deref(), remote)
             }
-            BlogCommands::List { remote } => list_posts(&workspace_root, remote),
-            BlogCommands::Delete { slug, remote } => delete_post(&workspace_root, &slug, remote),
+            BlogCommands::List { remote } => list_blogs(&workspace_root, remote),
+            BlogCommands::Delete { slug, remote } => delete_blog(&workspace_root, &slug, remote),
         },
         Commands::Projects { command } => match command {
             ProjectsCommands::Create { slug, name, description, stage, readme_url, tags, urls, open_to_contributors, remote } => {
@@ -462,7 +462,7 @@ fn migrate(workspace_root: &Path, remote: bool) -> Result<()> {
     Ok(())
 }
 
-fn publish_post(
+fn publish_blog(
     workspace_root: &Path,
     file: &str,
     slug: &str,
@@ -531,13 +531,13 @@ fn publish_post(
     let summary_str = summary.unwrap_or("");
     let external_url_str = external_url.map(|s| format!(", '{}'", s)).unwrap_or_else(|| ", NULL".to_string());
 
-    // Insert post without tags (tags will be handled separately)
+    // Insert blog post without tags (tags will be handled separately)
     // Escape single quotes in SQL strings by doubling them
     let escaped_title = title.replace('\'', "''");
     let escaped_summary = summary_str.replace('\'', "''");
 
     let sql = format!(
-        "INSERT INTO posts (content_id, slug, title, summary, published_at, external_url) \
+        "INSERT INTO blogs (content_id, slug, title, summary, published_at, external_url) \
          VALUES ('{}', '{}', '{}', '{}', datetime('now'){});",
         content_id, slug, escaped_title, escaped_summary, external_url_str
     );
@@ -557,7 +557,7 @@ fn publish_post(
         .context("Failed to insert into D1")?;
 
     if !db_status.success() {
-        anyhow::bail!("Failed to insert post metadata");
+        anyhow::bail!("Failed to insert blog post metadata");
     }
 
     // 3. Handle tags if provided
@@ -589,9 +589,9 @@ fn publish_post(
             tag_cmd.status()
                 .context("Failed to insert tag")?;
 
-            // Get tag ID and insert into post_tags junction table
+            // Get tag ID and insert into blog_tags junction table
             let link_tag_sql = format!(
-                "INSERT INTO post_tags (post_id, tag_id) \
+                "INSERT INTO blog_tags (blog_id, tag_id) \
                  SELECT '{}', id FROM tags WHERE name = '{}';",
                 content_id, tag_name
             );
@@ -608,20 +608,20 @@ fn publish_post(
                 .current_dir(workspace_root.join("api"));
 
             link_cmd.status()
-                .context("Failed to link tag to post")?;
+                .context("Failed to link tag to blog post")?;
         }
     }
 
     status!("Finished", "publishing");
-    println!("              url: /posts/{}", slug);
+    println!("              url: /blogs/{}", slug);
     Ok(())
 }
 
-fn list_posts(workspace_root: &Path, remote: bool) -> Result<()> {
+fn list_blogs(workspace_root: &Path, remote: bool) -> Result<()> {
     let mode = if remote { "--remote" } else { "--local" };
     let location = if remote { "remote" } else { "local" };
 
-    status!("Listing", "posts ({})", location);
+    status!("Listing", "blog posts ({})", location);
 
     // Load wrangler config
     let config = load_wrangler_config(workspace_root)?;
@@ -633,11 +633,11 @@ fn list_posts(workspace_root: &Path, remote: bool) -> Result<()> {
         })
         .context("DB database not found in wrangler.toml")?;
 
-    // Query posts with tags from junction table
+    // Query blog posts with tags from junction table
     let query = "SELECT p.slug, p.title, p.published_at, \
                  GROUP_CONCAT(t.name, ', ') as tags \
-                 FROM posts p \
-                 LEFT JOIN post_tags pt ON p.content_id = pt.post_id \
+                 FROM blogs p \
+                 LEFT JOIN blog_tags pt ON p.content_id = pt.blog_id \
                  LEFT JOIN tags t ON pt.tag_id = t.id \
                  GROUP BY p.content_id \
                  ORDER BY p.published_at DESC;";
@@ -648,17 +648,17 @@ fn list_posts(workspace_root: &Path, remote: bool) -> Result<()> {
         .arg(query)
         .current_dir(workspace_root.join("api"))
         .output()
-        .context("Failed to query posts")?;
+        .context("Failed to query blog posts")?;
 
     println!("{}", String::from_utf8_lossy(&output.stdout));
 
     Ok(())
 }
 
-fn delete_post(workspace_root: &Path, slug: &str, remote: bool) -> Result<()> {
+fn delete_blog(workspace_root: &Path, slug: &str, remote: bool) -> Result<()> {
     let mode = if remote { "--remote" } else { "--local" };
 
-    status!("Deleting", "post: {}", slug);
+    status!("Deleting", "blog post: {}", slug);
 
     // Load wrangler config
     let config = load_wrangler_config(workspace_root)?;
@@ -684,7 +684,7 @@ fn delete_post(workspace_root: &Path, slug: &str, remote: bool) -> Result<()> {
     let _output = Command::new("npx")
         .args(["wrangler", "d1", "execute", &db_name, mode])
         .arg("--command")
-        .arg(format!("SELECT content_id FROM posts WHERE slug = '{}';", slug))
+        .arg(format!("SELECT content_id FROM blogs WHERE slug = '{}';", slug))
         .current_dir(workspace_root.join("api"))
         .output()
         .context("Failed to get content_id")?;
@@ -692,17 +692,17 @@ fn delete_post(workspace_root: &Path, slug: &str, remote: bool) -> Result<()> {
     // TODO: Parse content_id from output for automatic R2 deletion
     // For now, we just delete the DB entry and note that R2 cleanup is manual
 
-    // 2. Delete from D1 (cascades to post_tags due to foreign key)
+    // 2. Delete from D1 (cascades to blog_tags due to foreign key)
     let delete_status = Command::new("npx")
         .args(["wrangler", "d1", "execute", &db_name, mode])
         .arg("--command")
-        .arg(format!("DELETE FROM posts WHERE slug = '{}';", slug))
+        .arg(format!("DELETE FROM blogs WHERE slug = '{}';", slug))
         .current_dir(workspace_root.join("api"))
         .status()
         .context("Failed to delete from D1")?;
 
     if !delete_status.success() {
-        anyhow::bail!("Failed to delete post from D1");
+        anyhow::bail!("Failed to delete blog post from D1");
     }
 
     status!("Finished", "deletion");

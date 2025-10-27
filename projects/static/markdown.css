@@ -1,0 +1,19 @@
+/* Markdown Content Styling */
+
+.readme-content pre {
+  padding: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+}
+
+.readme-content code {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+}
+
+.readme-content :not(pre) > code {
+  background-color: var(--color-bg-secondary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}

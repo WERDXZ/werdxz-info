@@ -40,9 +40,9 @@ async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 
         // v1 API endpoints
         .get_async("/v1/health", |req, ctx| async move { routes::meta::handle_health(req, ctx).await })
-        .get_async("/v1/blogs", |req, ctx| async move { routes::blogs::handle_list_blogs(req, ctx).await })
-        .get_async("/v1/blogs/:slug", |req, ctx| async move { routes::blogs::handle_get_blog(req, ctx).await })
-        .get_async("/v1/tags", |req, ctx| async move { routes::blogs::handle_get_tags(req, ctx).await })
+        .get_async("/v1/posts", |req, ctx| async move { routes::posts::handle_list_posts(req, ctx).await })
+        .get_async("/v1/posts/:slug", |req, ctx| async move { routes::posts::handle_get_post(req, ctx).await })
+        .get_async("/v1/tags", |req, ctx| async move { routes::posts::handle_get_tags(req, ctx).await })
         .get_async("/v1/projects", |req, ctx| async move { routes::projects::handle_list_projects(req, ctx).await })
         .get_async("/v1/projects/:slug", |req, ctx| async move { routes::projects::handle_get_project(req, ctx).await })
         .get_async("/v1/resume", |req, ctx| async move { routes::resume::handle_get_resume(req, ctx).await })

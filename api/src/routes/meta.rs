@@ -41,7 +41,7 @@ pub struct ApiEndpoints {
     pub docs: String,
     pub openapi: String,
     pub health: String,
-    pub blogs: String,
+    pub posts: String,
     pub resume: String,
 }
 
@@ -145,7 +145,7 @@ pub async fn handle_root(_req: Request, _ctx: RouteContext<()>) -> Result<Respon
             docs: "/docs".to_string(),
             openapi: "/openapi.json".to_string(),
             health: "/v1/health".to_string(),
-            blogs: "/v1/blogs".to_string(),
+            posts: "/v1/posts".to_string(),
             resume: "/v1/resume".to_string(),
         },
     };

@@ -1,4 +1,4 @@
 pub mod meta;
-pub mod blogs;
+pub mod posts;
 pub mod projects;
 pub mod resume;

@@ -1,6 +1,6 @@
 use worker::*;
 use serde::Deserialize;
-use crate::models::blog::{Blog, BlogListItem, Pagination};
+use crate::models::post::{Post, PostListItem, Pagination};
 use crate::models::project::Project;
 use crate::models::tag::TagWithCount;
 
@@ -56,8 +56,8 @@ impl SortOrder {
     }
 }
 
-/// Query parameters for listing blogs
-pub struct ListBlogsParams {
+/// Query parameters for listing posts
+pub struct ListPostsParams {
     pub page: u32,
     pub limit: u32,
     pub tags: Option<Vec<String>>,
@@ -66,7 +66,7 @@ pub struct ListBlogsParams {
     pub order: SortOrder,
 }
 
-impl Default for ListBlogsParams {
+impl Default for ListPostsParams {
     fn default() -> Self {
         Self {
             page: 1,
@@ -89,7 +89,7 @@ enum QueryType {
 }
 
 impl QueryType {
-    fn from_params(params: &ListBlogsParams) -> Self {
+    fn from_params(params: &ListPostsParams) -> Self {
         match (params.tags.is_some(), params.search.is_some()) {
             (false, false) => Self::NoFilters,
             (true, false) => Self::TagsOnly,
@@ -102,24 +102,24 @@ impl QueryType {
     fn count_query(&self) -> &'static str {
         match self {
             Self::NoFilters => {
-                "SELECT COUNT(*) as count FROM blogs p \
+                "SELECT COUNT(*) as count FROM posts p \
                  WHERE p.published_at <= datetime('now')"
             }
             Self::TagsOnly => {
-                "SELECT COUNT(DISTINCT p.content_id) as count FROM blogs p \
-                 INNER JOIN blog_tags pt ON p.content_id = pt.blog_id \
+                "SELECT COUNT(DISTINCT p.content_id) as count FROM posts p \
+                 INNER JOIN post_tags pt ON p.content_id = pt.post_id \
                  INNER JOIN tags t ON pt.tag_id = t.id \
                  WHERE p.published_at <= datetime('now') \
                  AND t.name IN (SELECT json_each.value FROM json_each(?))"
             }
             Self::SearchOnly => {
-                "SELECT COUNT(*) as count FROM blogs p \
+                "SELECT COUNT(*) as count FROM posts p \
                  WHERE p.published_at <= datetime('now') \
                  AND (p.title LIKE '%' || ? || '%' OR p.summary LIKE '%' || ? || '%')"
             }
             Self::TagsAndSearch => {
-                "SELECT COUNT(DISTINCT p.content_id) as count FROM blogs p \
-                 INNER JOIN blog_tags pt ON p.content_id = pt.blog_id \
+                "SELECT COUNT(DISTINCT p.content_id) as count FROM posts p \
+                 INNER JOIN post_tags pt ON p.content_id = pt.post_id \
                  INNER JOIN tags t ON pt.tag_id = t.id \
                  WHERE p.published_at <= datetime('now') \
                  AND t.name IN (SELECT json_each.value FROM json_each(?)) \
@@ -131,10 +131,10 @@ impl QueryType {
     /// Get the select query for this filter combination
     fn select_query(&self, sort_field: SortField, sort_order: SortOrder) -> String {
         let base = "SELECT p.slug, p.title, p.summary, p.published_at, p.external_url, \
-                    (SELECT json_group_array(t.name) FROM blog_tags pt \
+                    (SELECT json_group_array(t.name) FROM post_tags pt \
                      INNER JOIN tags t ON pt.tag_id = t.id \
-                     WHERE pt.blog_id = p.content_id) as tags \
-                    FROM blogs p";
+                     WHERE pt.post_id = p.content_id) as tags \
+                    FROM posts p";
 
         let order = format!(" ORDER BY p.{} {}", sort_field.to_sql(), sort_order.to_sql());
 
@@ -144,7 +144,7 @@ impl QueryType {
             }
             Self::TagsOnly => {
                 format!(
-                    "{} INNER JOIN blog_tags pt ON p.content_id = pt.blog_id \
+                    "{} INNER JOIN post_tags pt ON p.content_id = pt.post_id \
                      INNER JOIN tags t ON pt.tag_id = t.id \
                      WHERE p.published_at <= datetime('now') \
                      AND t.name IN (SELECT json_each.value FROM json_each(?))\
@@ -162,7 +162,7 @@ impl QueryType {
             }
             Self::TagsAndSearch => {
                 format!(
-                    "{} INNER JOIN blog_tags pt ON p.content_id = pt.blog_id \
+                    "{} INNER JOIN post_tags pt ON p.content_id = pt.post_id \
                      INNER JOIN tags t ON pt.tag_id = t.id \
                      WHERE p.published_at <= datetime('now') \
                      AND t.name IN (SELECT json_each.value FROM json_each(?)) \
@@ -175,8 +175,8 @@ impl QueryType {
     }
 }
 
-/// List blogs with pagination and filtering
-pub async fn list_blogs(db: &D1Database, params: &ListBlogsParams) -> Result<(Vec<BlogListItem>, Pagination)> {
+/// List posts with pagination and filtering
+pub async fn list_posts(db: &D1Database, params: &ListPostsParams) -> Result<(Vec<PostListItem>, Pagination)> {
     let offset = (params.page - 1) * params.limit;
     let query_type = QueryType::from_params(params);
 
@@ -214,7 +214,7 @@ pub async fn list_blogs(db: &D1Database, params: &ListBlogsParams) -> Result<(Ve
     };
 
     // Execute select query based on filter combination
-    let blogs: Vec<BlogListItem> = match query_type {
+    let posts: Vec<PostListItem> = match query_type {
         QueryType::NoFilters => {
             let stmt = db.prepare(query_type.select_query(params.sort_by, params.order))
                 .bind(&[params.limit.into(), offset.into()])?;
@@ -256,33 +256,33 @@ pub async fn list_blogs(db: &D1Database, params: &ListBlogsParams) -> Result<(Ve
         has_next,
     };
 
-    Ok((blogs, pagination))
+    Ok((posts, pagination))
 }
 
-/// SQL query for fetching a single blog by slug
-const GET_BLOG_BY_SLUG_QUERY: &str =
+/// SQL query for fetching a single post by slug
+const GET_POST_BY_SLUG_QUERY: &str =
     "SELECT p.content_id, p.slug, p.title, p.summary, p.published_at, p.updated_at, p.external_url, p.created_at, \
-     (SELECT json_group_array(t.name) FROM blog_tags pt \
+     (SELECT json_group_array(t.name) FROM post_tags pt \
       INNER JOIN tags t ON pt.tag_id = t.id \
-      WHERE pt.blog_id = p.content_id) as tags \
-     FROM blogs p \
+      WHERE pt.post_id = p.content_id) as tags \
+     FROM posts p \
      WHERE p.slug = ? LIMIT 1";
 
-/// Get a single blog by slug
-pub async fn get_blog_by_slug(db: &D1Database, slug: &str) -> Result<Option<Blog>> {
-    let stmt = db.prepare(GET_BLOG_BY_SLUG_QUERY)
+/// Get a single post by slug
+pub async fn get_post_by_slug(db: &D1Database, slug: &str) -> Result<Option<Post>> {
+    let stmt = db.prepare(GET_POST_BY_SLUG_QUERY)
         .bind(&[slug.into()])?;
 
-    let result = stmt.first::<Blog>(None).await?;
+    let result = stmt.first::<Post>(None).await?;
     Ok(result)
 }
 
 /// SQL query for fetching all tags with usage counts
 const GET_ALL_TAGS_QUERY: &str =
-    "SELECT t.name as tag, COUNT(pt.blog_id) as count \
+    "SELECT t.name as tag, COUNT(pt.post_id) as count \
      FROM tags t \
-     INNER JOIN blog_tags pt ON t.id = pt.tag_id \
-     INNER JOIN blogs p ON pt.blog_id = p.content_id \
+     INNER JOIN post_tags pt ON t.id = pt.tag_id \
+     INNER JOIN posts p ON pt.post_id = p.content_id \
      WHERE p.published_at <= datetime('now') \
      GROUP BY t.id, t.name \
      ORDER BY t.name ASC";

@@ -33,9 +33,9 @@ CSS primitives, design tokens, and shared styles accessible via CDN.
 
 **Manage blog posts:**
 ```bash
-cargo xtask blog publish --slug "my-post" --title "My Post" blog/my-post.md
-cargo xtask blog list
-cargo xtask blog delete --slug "my-post"
+cargo xtask post publish --slug "my-post" --title "My Post" blog/my-post.md
+cargo xtask post list
+cargo xtask post delete my-post
 ```
 
 **Manage projects:**

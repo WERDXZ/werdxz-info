@@ -1,4 +1,4 @@
-export function formatBlogDate(dateString: string): string {
+export function formatPostDate(dateString: string): string {
   try {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",

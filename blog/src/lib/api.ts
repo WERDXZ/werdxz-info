@@ -1,9 +1,9 @@
-import type { Blog, BlogsResponse, TagWithCount } from './types';
+import type { Post, PostsResponse, TagWithCount } from './types';
 
 const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || 'https://api.werdxz.info/v1';
 const FETCH_TIMEOUT = 10000; // 10 seconds
 
-export type { Blog, TagWithCount };
+export type { Post, TagWithCount };
 
 async function fetchWithTimeout(url: string, timeout = FETCH_TIMEOUT): Promise<Response> {
   const controller = new AbortController();
@@ -22,19 +22,19 @@ async function fetchWithTimeout(url: string, timeout = FETCH_TIMEOUT): Promise<R
   }
 }
 
-export interface FetchBlogsOptions {
+export interface FetchPostsOptions {
   limit?: number;
   page?: number;
   tags?: string;
   search?: string;
 }
 
-export async function fetchBlogs({
+export async function fetchPosts({
   limit = 10,
   page = 1,
   tags,
   search,
-}: FetchBlogsOptions = {}): Promise<BlogsResponse> {
+}: FetchPostsOptions = {}): Promise<PostsResponse> {
   const params = new URLSearchParams({
     limit: limit.toString(),
     page: page.toString(),
@@ -43,22 +43,22 @@ export async function fetchBlogs({
   if (tags) params.set('tags', tags);
   if (search) params.set('search', search);
 
-  const url = `${API_BASE_URL}/blogs?${params}`;
+  const url = `${API_BASE_URL}/posts?${params}`;
   const response = await fetchWithTimeout(url);
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch blogs: ${response.statusText}`);
+    throw new Error(`Failed to fetch posts: ${response.statusText}`);
   }
 
   return response.json();
 }
 
-export async function fetchBlog(slug: string): Promise<Blog> {
-  const url = `${API_BASE_URL}/blogs/${slug}`;
+export async function fetchPost(slug: string): Promise<Post> {
+  const url = `${API_BASE_URL}/posts/${slug}`;
   const response = await fetchWithTimeout(url);
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch blog: ${response.statusText}`);
+    throw new Error(`Failed to fetch post: ${response.statusText}`);
   }
 
   return response.json();

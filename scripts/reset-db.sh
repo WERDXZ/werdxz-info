@@ -44,7 +44,7 @@ echo ""
 # Drop all tables
 echo -e "${BLUE}Step 1/2: Dropping existing tables...${NC}"
 
-TABLES=("blog_tags" "blogs" "post_tags" "posts" "tags" "projects" "d1_migrations")
+TABLES=("post_tags" "posts" "tags" "d1_migrations")
 
 for table in "${TABLES[@]}"; do
     echo "  Dropping table: $table"

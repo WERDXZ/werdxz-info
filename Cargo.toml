@@ -1,5 +1,5 @@
 [workspace]
-members = ["api", "xtask"]
+members = ["api", "xtask", "portfolio"]
 resolver = "2"
 
 [workspace.package]

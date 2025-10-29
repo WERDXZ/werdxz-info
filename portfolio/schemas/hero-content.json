@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hero Content",
+  "description": "Hero section content for portfolio modes",
+  "type": "object",
+  "properties": {
+    "subtitle": {
+      "type": "string",
+      "description": "Role/title displayed under name",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of expertise/focus",
+      "minLength": 1,
+      "maxLength": 500
+    }
+  },
+  "required": ["subtitle", "description"],
+  "additionalProperties": false
+}

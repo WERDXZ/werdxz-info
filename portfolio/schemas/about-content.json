@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "About Content",
+  "description": "About section content for portfolio modes",
+  "type": "object",
+  "properties": {
+    "paragraphs": {
+      "type": "array",
+      "description": "Array of paragraph text",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "minItems": 1,
+      "maxItems": 10
+    }
+  },
+  "required": ["paragraphs"],
+  "additionalProperties": false
+}

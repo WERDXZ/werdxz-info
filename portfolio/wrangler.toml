@@ -1,0 +1,16 @@
+name = "werdxz-portfolio"
+main = "build/index.js"
+compatibility_date = "2025-10-27"
+
+[build]
+command = "cargo leptos build --release && cargo install -q worker-build && LEPTOS_OUTPUT_NAME=portfolio worker-build --release --features ssr"
+
+[assets]
+directory = "../target/site"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "ad9607c404424a8eb6949994a4383845"  # Shared with API, using portfolio:* prefix
+
+# [vars]
+# API_BASE_URL = "https://api.werdxz.info"  # Uses default from constants.rs

@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project",
+  "description": "Featured project for portfolio display",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Project name",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "Project description",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "technologies": {
+      "type": "array",
+      "description": "Array of technology tags",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "minItems": 1,
+      "maxItems": 20
+    },
+    "image_url": {
+      "type": ["string", "null"],
+      "description": "Optional project image URL",
+      "format": "uri"
+    },
+    "redirect_url": {
+      "type": ["string", "null"],
+      "description": "Optional URL to open when card is clicked",
+      "format": "uri"
+    },
+    "links": {
+      "type": "array",
+      "description": "Array of project links",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": ["label", "url"],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 10
+    }
+  },
+  "required": ["title", "description", "technologies", "image_url", "links"],
+  "additionalProperties": false
+}

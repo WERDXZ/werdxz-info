@@ -12,8 +12,7 @@ Shell scripts for managing portfolio content in Cloudflare KV.
 ## Modes
 
 Valid portfolio modes:
-- `software-engineer` (default, path: `/`)
-- `fullstack` (path: `/fullstack`)
+- `software-engineer` (path: `/swe`, `/` redirects here)
 - `rust` (path: `/rust`)
 - `student` (path: `/student`)
 
@@ -39,12 +38,12 @@ Valid portfolio modes:
 ./scripts/portfolio/about.sh list
 
 # Get about content for a mode
-./scripts/portfolio/about.sh get fullstack
+./scripts/portfolio/about.sh get rust
 
 # Set about content for a mode (multiple paragraphs)
-./scripts/portfolio/about.sh set fullstack \
-    "I'm a full-stack developer specializing in modern web applications." \
-    "My focus is on creating seamless user experiences."
+./scripts/portfolio/about.sh set rust \
+    "I'm a Rust developer specializing in systems programming." \
+    "My focus is on building high-performance, reliable software."
 ```
 
 ## Projects
@@ -82,7 +81,7 @@ Valid portfolio modes:
 ./scripts/portfolio/experience.sh featured student
 
 # Set featured experiences for a mode
-./scripts/portfolio/experience.sh set-featured student cs-tutor rust-club erp-volunteer
+./scripts/portfolio/experience.sh set-featured rust systems-engineer rust-club performance-optimization
 ```
 
 ## JSON Schemas
@@ -104,7 +103,7 @@ Create `my-project.json`:
 {
   "title": "My Project",
   "description": "Project description",
-  "technologies": ["Rust", "TypeScript"],
+  "tags": ["rust", "typescript", "web", "systems"],
   "image_url": null,
   "redirect_url": "https://github.com/me/my-project",
   "links": [

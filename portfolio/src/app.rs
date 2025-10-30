@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use leptos_meta::{provide_meta_context, Meta, MetaTags, Stylesheet, Title};
 use leptos_router::{
-    components::{Route, Router, Routes},
+    components::{Redirect, Route, Router, Routes},
     StaticSegment,
 };
 
@@ -43,8 +43,8 @@ pub fn App() -> impl IntoView {
         // content for this welcome page
         <Router>
             <Routes fallback=|| "Page not found.".into_view()>
-                <Route path=StaticSegment("") view=HomePage/>
-                <Route path=StaticSegment("fullstack") view=HomePage/>
+                <Route path=StaticSegment("") view=|| view! { <Redirect path="/swe"/> }/>
+                <Route path=StaticSegment("swe") view=HomePage/>
                 <Route path=StaticSegment("rust") view=HomePage/>
                 <Route path=StaticSegment("student") view=HomePage/>
             </Routes>
@@ -73,12 +73,12 @@ fn HomePage() -> impl IntoView {
 
     view! {
         <Hero mode=mode.into() has_posts=has_posts.into()/>
-        <main class="main-content">
+        <main>
             <AboutSection mode=mode.into()/>
             <ExperienceSection mode=mode.into()/>
             <ProjectsSection mode=mode.into()/>
             <WritingSection mode=mode.into()/>
-            <footer class="site-footer">
+            <footer>
                 <p>"© 2025 werdxz"</p>
             </footer>
         </main>

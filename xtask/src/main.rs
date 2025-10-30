@@ -4,8 +4,6 @@ use serde::Deserialize;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-mod portfolio;
-
 // ANSI color codes
 const GREEN: &str = "\x1b[32m";
 const RESET: &str = "\x1b[0m";
@@ -80,12 +78,6 @@ enum Commands {
     Resume {
         #[command(subcommand)]
         command: ResumeCommands,
-    },
-
-    /// Portfolio showcase management commands
-    Portfolio {
-        #[command(subcommand)]
-        command: PortfolioCommands,
     },
 
     /// Apply database migrations
@@ -231,185 +223,6 @@ enum ResumeCommands {
     },
 }
 
-#[derive(Subcommand)]
-enum PortfolioCommands {
-    /// Manage featured projects
-    Project {
-        #[command(subcommand)]
-        command: PortfolioProjectCommands,
-    },
-
-    /// Manage work experience
-    Experience {
-        #[command(subcommand)]
-        command: PortfolioExperienceCommands,
-    },
-
-    /// Manage featured blog posts
-    Post {
-        #[command(subcommand)]
-        command: PortfolioPostCommands,
-    },
-
-    /// View contact form submissions
-    Contact {
-        #[command(subcommand)]
-        command: PortfolioContactCommands,
-    },
-}
-
-#[derive(Subcommand)]
-enum PortfolioProjectCommands {
-    /// Add a featured project to the portfolio
-    Add {
-        /// Project ID (unique identifier)
-        id: String,
-
-        /// Project title
-        #[arg(long)]
-        title: String,
-
-        /// Project description
-        #[arg(long)]
-        description: String,
-
-        /// Technologies (comma-separated)
-        #[arg(long)]
-        technologies: String,
-
-        /// Image URL
-        #[arg(long)]
-        image_url: String,
-
-        /// Optional redirect URL when card is clicked
-        #[arg(long)]
-        redirect_url: Option<String>,
-
-        /// Links in format "label:url" (can be specified multiple times)
-        #[arg(long = "link")]
-        links: Vec<String>,
-
-        /// Add to remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-
-    /// List all featured projects
-    List {
-        /// List from remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-
-    /// Remove a featured project
-    Remove {
-        /// Project ID to remove
-        id: String,
-
-        /// Remove from remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-}
-
-#[derive(Subcommand)]
-enum PortfolioExperienceCommands {
-    /// Add work experience to the portfolio
-    Add {
-        /// Experience ID (unique identifier)
-        id: String,
-
-        /// Company name
-        #[arg(long)]
-        company: String,
-
-        /// Job role
-        #[arg(long)]
-        role: String,
-
-        /// Time period (e.g., "Summer 2024")
-        #[arg(long)]
-        period: String,
-
-        /// Location (optional)
-        #[arg(long)]
-        location: Option<String>,
-
-        /// Impact narrative description
-        #[arg(long)]
-        description: String,
-
-        /// Technologies (comma-separated)
-        #[arg(long)]
-        technologies: String,
-
-        /// Optional redirect URL
-        #[arg(long)]
-        redirect_url: Option<String>,
-
-        /// Add to remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-
-    /// List all work experiences
-    List {
-        /// List from remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-
-    /// Remove work experience
-    Remove {
-        /// Experience ID to remove
-        id: String,
-
-        /// Remove from remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-}
-
-#[derive(Subcommand)]
-enum PortfolioPostCommands {
-    /// Add a blog post to featured posts
-    Add {
-        /// Post slug
-        slug: String,
-
-        /// Add to remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-
-    /// List all featured blog posts
-    List {
-        /// List from remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-
-    /// Remove a blog post from featured posts
-    Remove {
-        /// Post slug to remove
-        slug: String,
-
-        /// Remove from remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-}
-
-#[derive(Subcommand)]
-enum PortfolioContactCommands {
-    /// List contact form submissions
-    List {
-        /// List from remote KV (default is local)
-        #[arg(long)]
-        remote: bool,
-    },
-}
-
 fn main() -> Result<()> {
     let cli = Cli::parse();
     let workspace_root = find_workspace_root()?;
@@ -435,12 +248,6 @@ fn main() -> Result<()> {
         },
         Commands::Resume { command } => match command {
             ResumeCommands::Update { remote } => update_resume(&workspace_root, remote),
-        },
-        Commands::Portfolio { command } => match command {
-            PortfolioCommands::Project { command } => portfolio::handle_project_command(&workspace_root, command),
-            PortfolioCommands::Experience { command } => portfolio::handle_experience_command(&workspace_root, command),
-            PortfolioCommands::Post { command } => portfolio::handle_post_command(&workspace_root, command),
-            PortfolioCommands::Contact { command } => portfolio::handle_contact_command(&workspace_root, command),
         },
         Commands::Migrate { remote } => migrate(&workspace_root, remote),
     }

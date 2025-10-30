@@ -43,7 +43,7 @@ fn BlogPostCard(post: BlogPost) -> impl IntoView {
     let post_url = format!("{}/posts/{}", crate::constants::BLOG_BASE_URL, slug);
 
     view! {
-        <a href=post_url target="_blank" rel="noopener noreferrer" class="card post-card">
+        <a href=post_url target="_blank" rel="noopener noreferrer" class="card">
             <h3 class="post-title">{title}</h3>
             <p class="post-summary">{summary}</p>
             <div class="post-meta">

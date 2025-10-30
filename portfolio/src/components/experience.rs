@@ -52,7 +52,7 @@ fn ExperienceItem(experience: Experience) -> impl IntoView {
         period,
         location,
         description,
-        technologies,
+        tags,
         redirect_url,
     } = experience;
 
@@ -78,7 +78,7 @@ fn ExperienceItem(experience: Experience) -> impl IntoView {
 
     view! {
         <article
-            class="card experience-item"
+            class="card"
             class:clickable=has_redirect
             tabindex="0"
             on:click=item_click
@@ -97,10 +97,10 @@ fn ExperienceItem(experience: Experience) -> impl IntoView {
                 </div>
             </div>
             <p class="experience-description">{description}</p>
-            <div class="experience-technologies">
-                {technologies
+            <div class="experience-tags">
+                {tags
                     .into_iter()
-                    .map(|tech| view! { <span class="tech-tag">{tech}</span> })
+                    .map(|tag| view! { <span class="tag">{tag}</span> })
                     .collect_view()}
             </div>
         </article>

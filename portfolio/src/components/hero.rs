@@ -71,20 +71,20 @@ pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
     });
 
     view! {
-        <header class="hero-sidebar">
-            <div class="hero-header">
-                <h1 class="hero-title">"Jiqing Yang"</h1>
-                <Suspense fallback=|| view! { <p class="hero-role">"Loading..."</p> }>
+        <header>
+            <div>
+                <h1>"Jiqing Yang"</h1>
+                <Suspense fallback=|| view! { <p>"Loading..."</p> }>
                     {move || {
                         hero_content.get().map(|result| {
                             match result {
                                 Ok(content) => view! {
-                                    <p class="hero-role">{content.subtitle}</p>
-                                    <p class="hero-description">{content.description}</p>
+                                    <p>{content.subtitle}</p>
+                                    <p>{content.description}</p>
                                 }.into_any(),
                                 Err(_) => view! {
-                                    <p class="hero-role">"Software Engineer"</p>
-                                    <p class="hero-description">"Building scalable systems."</p>
+                                    <p>"Software Engineer"</p>
+                                    <p>"Building scalable systems."</p>
                                 }.into_any()
                             }
                         })
@@ -92,30 +92,30 @@ pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
                 </Suspense>
             </div>
 
-            <nav class="hero-nav" aria-label="Main navigation">
-                <a href="#about" class="nav-link" class:active=move || active_section.get() == "about">"About"</a>
-                <a href="#experience" class="nav-link" class:active=move || active_section.get() == "experience">"Experience"</a>
-                <a href="#projects" class="nav-link" class:active=move || active_section.get() == "projects">"Projects"</a>
+            <nav aria-label="Main navigation">
+                <a href="#about" class:active=move || active_section.get() == "about">"About"</a>
+                <a href="#experience" class:active=move || active_section.get() == "experience">"Experience"</a>
+                <a href="#projects" class:active=move || active_section.get() == "projects">"Projects"</a>
                 {move || has_posts.get().then(|| view! {
-                    <a href="#writing" class="nav-link" class:active=move || active_section.get() == "writing">"Writing"</a>
+                    <a href="#writing" class:active=move || active_section.get() == "writing">"Writing"</a>
                 })}
             </nav>
 
-            <footer class="hero-footer">
-                <address class="hero-contact">
-                    <a href="mailto:contact@werdxz.com" class="contact-email">
+            <footer>
+                <address>
+                    <a href="mailto:contact@werdxz.com">
                         "contact@werdxz.com"
                     </a>
                 </address>
 
-                <div class="hero-social" aria-label="Social links">
-                    <a href="https://linkedin.com/in/werdxz" target="_blank" rel="noopener noreferrer" class="social-link">
+                <div aria-label="Social links">
+                    <a href="https://linkedin.com/in/werdxz" target="_blank" rel="noopener noreferrer">
                         "LinkedIn"
                     </a>
-                    <a href="https://github.com/werdxz" target="_blank" rel="noopener noreferrer" class="social-link">
+                    <a href="https://github.com/werdxz" target="_blank" rel="noopener noreferrer">
                         "GitHub"
                     </a>
-                    <a href="https://blog.werdxz.info" target="_blank" rel="noopener noreferrer" class="social-link">
+                    <a href="https://blog.werdxz.info" target="_blank" rel="noopener noreferrer">
                         "Blog"
                     </a>
                 </div>

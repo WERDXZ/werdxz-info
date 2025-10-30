@@ -45,7 +45,7 @@ body {
 }
 
 /* Hero Sidebar - Fixed Left Column */
-.hero-sidebar {
+body > header {
   position: sticky;
   top: 0;
   height: 100vh;
@@ -56,32 +56,32 @@ body {
   border-right: 1px solid var(--color-border-default);
 }
 
-.hero-header {
+body > header > div {
   flex-shrink: 0;
 }
 
-.hero-title {
+body > header h1 {
   font-size: var(--font-size-3xl);
   font-weight: 700;
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
-.hero-role {
+body > header > div > p:first-of-type {
   font-size: var(--font-size-lg);
   font-weight: 500;
   color: var(--color-text-secondary);
   margin-bottom: var(--spacing-lg);
 }
 
-.hero-description {
+body > header > div > p:last-of-type {
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   line-height: 1.7;
 }
 
 /* Navigation */
-.hero-nav {
+body > header nav {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -89,7 +89,7 @@ body {
   padding-top: var(--spacing-3xl);
 }
 
-.nav-link {
+body > header nav a {
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--color-text-tertiary);
@@ -98,54 +98,54 @@ body {
   transition: color var(--transition-base);
 }
 
-.nav-link:hover,
-.nav-link.active {
+body > header nav a:hover,
+body > header nav a.active {
   color: var(--color-text-link);
 }
 
 /* Footer - Contact & Social */
-.hero-footer {
+body > header > footer {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
 }
 
-.hero-contact {
+body > header address {
   font-style: normal;
   margin: 0;
 }
 
-.contact-email {
+body > header address a {
   font-size: var(--font-size-sm);
   color: var(--color-text-link);
   text-decoration: none;
   transition: color var(--transition-base);
 }
 
-.contact-email:hover {
+body > header address a:hover {
   color: var(--color-text-link-hover);
   text-decoration: underline;
 }
 
-.hero-social {
+body > header > footer > div {
   display: flex;
   gap: var(--spacing-lg);
 }
 
-.social-link {
+body > header > footer > div a {
   font-size: var(--font-size-sm);
   color: var(--color-text-link);
   text-decoration: none;
   transition: color var(--transition-base);
 }
 
-.social-link:hover {
+body > header > footer > div a:hover {
   color: var(--color-text-link-hover);
 }
 
 /* Main Content - Scrollable Right Column */
-.main-content {
+main {
   padding: var(--spacing-4xl) var(--spacing-3xl);
   display: flex;
   flex-direction: column;
@@ -265,22 +265,28 @@ section {
   text-align: right;
 }
 
-/* Technology Tags */
-.project-technologies,
-.experience-technologies {
+/* Tags (flattened for projects, experience, and posts) */
+.project-tags,
+.experience-tags,
+.post-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: 0;
   margin-top: var(--spacing-xs);
 }
 
-.tech-tag {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-family-mono);
+.tag {
+  display: inline-block;
+  padding: var(--spacing-xs) 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.tag:not(:last-child)::after {
+  content: " · ";
   color: var(--color-text-tertiary);
-  background-color: var(--color-bg-secondary);
-  border-radius: 3px;
+  padding: 0 var(--spacing-xs);
 }
 
 /* Project Links */
@@ -315,21 +321,6 @@ section {
   color: var(--color-text-tertiary);
 }
 
-.post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-}
-
-.tag {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-family-mono);
-  color: var(--color-text-tertiary);
-  background-color: var(--color-bg-secondary);
-  border-radius: 3px;
-}
-
 /* Section Links */
 .section-link {
   display: inline-block;
@@ -346,13 +337,13 @@ section {
 }
 
 /* Footer */
-.site-footer {
+main > footer {
   margin-top: var(--spacing-3xl);
   padding-top: var(--spacing-2xl);
   border-top: 1px solid var(--color-border-default);
 }
 
-.site-footer p {
+main > footer p {
   font-size: var(--font-size-sm);
   color: var(--color-text-tertiary);
   text-align: center;
@@ -377,7 +368,7 @@ section {
     grid-template-columns: 1fr;
   }
 
-  .hero-sidebar {
+  body > header {
     position: relative;
     height: auto;
     padding: var(--spacing-3xl) var(--spacing-lg);
@@ -385,7 +376,7 @@ section {
     border-bottom: 1px solid var(--color-border-default);
   }
 
-  .main-content {
+  main {
     padding: var(--spacing-2xl) var(--spacing-lg);
   }
 

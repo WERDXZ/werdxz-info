@@ -33,9 +33,9 @@
       "minLength": 1,
       "maxLength": 2000
     },
-    "technologies": {
+    "tags": {
       "type": "array",
-      "description": "Array of technology tags",
+      "description": "Flattened array of tags (technologies, skills, categories, etc.)",
       "items": {
         "type": "string",
         "minLength": 1,
@@ -50,6 +50,6 @@
       "format": "uri"
     }
   },
-  "required": ["company", "role", "period", "description", "technologies"],
+  "required": ["company", "role", "period", "description", "tags"],
   "additionalProperties": false
 }

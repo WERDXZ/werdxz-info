@@ -16,9 +16,9 @@
       "minLength": 1,
       "maxLength": 2000
     },
-    "technologies": {
+    "tags": {
       "type": "array",
-      "description": "Array of technology tags",
+      "description": "Flattened array of tags (technologies, categories, etc.)",
       "items": {
         "type": "string",
         "minLength": 1,
@@ -60,6 +60,6 @@
       "maxItems": 10
     }
   },
-  "required": ["title", "description", "technologies", "image_url", "links"],
+  "required": ["title", "description", "tags", "image_url", "links"],
   "additionalProperties": false
 }

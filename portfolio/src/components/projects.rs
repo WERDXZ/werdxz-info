@@ -49,7 +49,7 @@ fn ProjectCard(project: Project) -> impl IntoView {
     let Project {
         title,
         description,
-        technologies,
+        tags,
         image_url: _,
         redirect_url,
         links,
@@ -77,7 +77,7 @@ fn ProjectCard(project: Project) -> impl IntoView {
 
     view! {
         <article
-            class="card project-card"
+            class="card"
             class:clickable=has_redirect
             tabindex=move || if has_redirect { "0" } else { "-1" }
             on:click=card_click
@@ -85,10 +85,10 @@ fn ProjectCard(project: Project) -> impl IntoView {
         >
             <h3 class="project-title">{title}</h3>
             <p class="project-description">{description}</p>
-            <div class="project-technologies">
-                {technologies
+            <div class="project-tags">
+                {tags
                     .into_iter()
-                    .map(|tech| view! { <span class="tech-tag">{tech}</span> })
+                    .map(|tag| view! { <span class="tag">{tag}</span> })
                     .collect_view()}
             </div>
             <div class="project-links">

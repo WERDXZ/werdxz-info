@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "kebab-case")]
 pub enum Mode {
     SoftwareEngineer,
-    Fullstack,
     Rust,
     Student,
 }
@@ -14,7 +13,7 @@ impl Mode {
     /// Convert from URL path segment
     pub fn from_path(path: &str) -> Self {
         match path {
-            "fullstack" => Mode::Fullstack,
+            "swe" => Mode::SoftwareEngineer,
             "rust" => Mode::Rust,
             "student" => Mode::Student,
             _ => Mode::SoftwareEngineer,
@@ -24,8 +23,7 @@ impl Mode {
     /// Convert to URL path segment
     pub fn to_path(&self) -> &'static str {
         match self {
-            Mode::SoftwareEngineer => "",
-            Mode::Fullstack => "fullstack",
+            Mode::SoftwareEngineer => "swe",
             Mode::Rust => "rust",
             Mode::Student => "student",
         }
@@ -35,7 +33,6 @@ impl Mode {
     pub fn to_tag(&self) -> &'static str {
         match self {
             Mode::SoftwareEngineer => "software-engineer",
-            Mode::Fullstack => "fullstack",
             Mode::Rust => "rust",
             Mode::Student => "student",
         }
@@ -45,7 +42,6 @@ impl Mode {
     pub fn subtitle(&self) -> &'static str {
         match self {
             Mode::SoftwareEngineer => "Software Engineer",
-            Mode::Fullstack => "Full Stack Developer",
             Mode::Rust => "Rust Developer",
             Mode::Student => "Student & Developer",
         }
@@ -56,9 +52,6 @@ impl Mode {
         match self {
             Mode::SoftwareEngineer => {
                 "Building scalable systems and developer tools with Rust, TypeScript, and modern cloud infrastructure."
-            }
-            Mode::Fullstack => {
-                "Crafting end-to-end web applications with modern frameworks, APIs, and cloud deployment."
             }
             Mode::Rust => {
                 "Systems programming and high-performance tools with Rust, WebAssembly, and native development."
@@ -88,7 +81,7 @@ pub struct ProjectLink {
 pub struct Project {
     pub title: String,
     pub description: String,
-    pub technologies: Vec<String>,
+    pub tags: Vec<String>,
     pub image_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_url: Option<String>,
@@ -104,7 +97,7 @@ pub struct Experience {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
     pub description: String,
-    pub technologies: Vec<String>,
+    pub tags: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_url: Option<String>,
 }

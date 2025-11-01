@@ -39,9 +39,21 @@ pub async fn get_featured_projects(mode: Mode) -> Result<Vec<Project>, ServerFnE
     let mut projects = Vec::new();
     for id in ids {
         let key = format!("portfolio:project:{}", id);
-        if let Ok(Some(json_str)) = worker_helpers::kv_get_text(&kv, &key).await {
-            if let Ok(project) = serde_json::from_str::<Project>(&json_str) {
-                projects.push(project);
+        match worker_helpers::kv_get_text(&kv, &key).await {
+            Ok(Some(json_str)) => {
+                match serde_json::from_str::<Project>(&json_str) {
+                    Ok(project) => projects.push(project),
+                    Err(e) => {
+                        leptos::logging::log!("Failed to deserialize project {}: {}", id, e);
+                        leptos::logging::log!("JSON was: {}", json_str);
+                    }
+                }
+            }
+            Ok(None) => {
+                leptos::logging::log!("Project {} not found in KV", id);
+            }
+            Err(e) => {
+                leptos::logging::log!("Failed to fetch project {} from KV: {}", id, e);
             }
         }
     }
@@ -80,9 +92,21 @@ pub async fn get_featured_experience(mode: Mode) -> Result<Vec<Experience>, Serv
     let mut experiences = Vec::new();
     for id in ids {
         let key = format!("portfolio:experience:{}", id);
-        if let Ok(Some(json_str)) = worker_helpers::kv_get_text(&kv, &key).await {
-            if let Ok(experience) = serde_json::from_str::<Experience>(&json_str) {
-                experiences.push(experience);
+        match worker_helpers::kv_get_text(&kv, &key).await {
+            Ok(Some(json_str)) => {
+                match serde_json::from_str::<Experience>(&json_str) {
+                    Ok(experience) => experiences.push(experience),
+                    Err(e) => {
+                        leptos::logging::log!("Failed to deserialize experience {}: {}", id, e);
+                        leptos::logging::log!("JSON was: {}", json_str);
+                    }
+                }
+            }
+            Ok(None) => {
+                leptos::logging::log!("Experience {} not found in KV", id);
+            }
+            Err(e) => {
+                leptos::logging::log!("Failed to fetch experience {} from KV: {}", id, e);
             }
         }
     }

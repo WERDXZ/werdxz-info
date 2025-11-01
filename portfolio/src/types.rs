@@ -82,7 +82,8 @@ pub struct Project {
     pub title: String,
     pub description: String,
     pub tags: Vec<String>,
-    pub image_url: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_url: Option<String>,
     pub links: Vec<ProjectLink>,

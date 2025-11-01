@@ -108,7 +108,8 @@ body > header > footer {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-2xl);
 }
 
 body > header address {
@@ -128,20 +129,40 @@ body > header address a:hover {
   text-decoration: underline;
 }
 
-body > header > footer > div {
+/* Social Links and Mode Switcher - Dot separated */
+.social-links,
+.mode-switcher {
   display: flex;
-  gap: var(--spacing-lg);
+  align-items: center;
+  gap: 0;
 }
 
-body > header > footer > div a {
+.social-links a,
+.mode-switcher a {
+  display: inline-block;
+  padding: var(--spacing-xs) 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-link);
   text-decoration: none;
   transition: color var(--transition-base);
 }
 
-body > header > footer > div a:hover {
+.social-links a:hover,
+.mode-switcher a:hover {
   color: var(--color-text-link-hover);
+}
+
+.social-links a:not(:last-child)::after,
+.mode-switcher a:not(:last-child)::after {
+  content: " · ";
+  color: var(--color-text-tertiary);
+  padding: 0 var(--spacing-xs);
+}
+
+/* Active mode indicator */
+.mode-switcher a.active {
+  color: var(--color-text-primary);
+  font-weight: 600;
 }
 
 /* Main Content - Scrollable Right Column */

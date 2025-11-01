@@ -40,8 +40,8 @@ pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
             }) as Box<dyn FnMut(js_sys::Array)>);
 
             let options = IntersectionObserverInit::new();
-            // Trigger when section enters top 30% of viewport (more lenient for top sections)
-            options.set_root_margin("-30% 0px -50% 0px");
+            // Trigger when section is in the 10%-20% zone from the top of viewport
+            options.set_root_margin("-10% 0px -80% 0px");
             // Use multiple thresholds for better tracking
             let thresholds = js_sys::Array::new();
             thresholds.push(&wasm_bindgen::JsValue::from_f64(0.0));
@@ -108,7 +108,7 @@ pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
                     </a>
                 </address>
 
-                <div aria-label="Social links">
+                <div class="social-links" aria-label="Social links">
                     <a href="https://linkedin.com/in/werdxz" target="_blank" rel="noopener noreferrer">
                         "LinkedIn"
                     </a>
@@ -117,6 +117,18 @@ pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
                     </a>
                     <a href="https://blog.werdxz.info" target="_blank" rel="noopener noreferrer">
                         "Blog"
+                    </a>
+                </div>
+
+                <div class="mode-switcher" aria-label="Portfolio modes">
+                    <a href="/swe" class:active=move || matches!(mode.get(), Mode::SoftwareEngineer)>
+                        "SWE"
+                    </a>
+                    <a href="/rust" class:active=move || matches!(mode.get(), Mode::Rust)>
+                        "Rust"
+                    </a>
+                    <a href="/student" class:active=move || matches!(mode.get(), Mode::Student)>
+                        "Student"
                     </a>
                 </div>
             </footer>

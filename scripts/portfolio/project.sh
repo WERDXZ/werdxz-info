@@ -9,31 +9,34 @@ usage() {
 Usage: $0 <command> [options]
 
 Commands:
-    get <project-id>              Get project by ID
-    set <project-id> <json-file>  Set project from JSON file
-    list                          List all projects
-    featured <mode>               List featured projects for mode
-    set-featured <mode> <id>...   Set featured project IDs for mode
+    get <mode> <project-id>            Get project by mode and ID
+    set <mode> <project-id> <json-file>  Set project from JSON file
+    list <mode>                        List all projects for mode
+    featured <mode>                    List featured projects for mode
+    set-featured <mode> <id>...        Set featured project IDs for mode
 
 Modes: ${MODES[*]}
 
 Examples:
-    $0 get chico-rs
-    $0 set chico-rs project.json
-    $0 list
-    $0 featured software-engineer
-    $0 set-featured rust chico-rs wlrs archenemy
+    $0 get industry chico-rs
+    $0 set industry chico-rs project.json
+    $0 list industry
+    $0 featured industry
+    $0 set-featured industry chico-rs wlrs archenemy
 EOF
     exit 1
 }
 
 get_project() {
-    local id=$1
-    local key="portfolio:project:$id"
+    local mode=$1
+    local id=$2
+    validate_mode "$mode"
+
+    local key="portfolio:project:$mode:$id"
     local content=$(kv_get "$key")
 
     if [ -z "$content" ]; then
-        echo "No project found with ID: $id"
+        echo "No project found with mode: $mode, ID: $id"
         exit 1
     fi
 
@@ -41,8 +44,10 @@ get_project() {
 }
 
 set_project() {
-    local id=$1
-    local json_file=$2
+    local mode=$1
+    local id=$2
+    local json_file=$3
+    validate_mode "$mode"
 
     if [ ! -f "$json_file" ]; then
         echo "Error: file not found: $json_file"
@@ -52,20 +57,23 @@ set_project() {
     local json=$(cat "$json_file")
     validate_json "$json" "$SCRIPT_DIR/../../portfolio/schemas/project.json"
 
-    local key="portfolio:project:$id"
-    echo "Setting project: $id"
+    local key="portfolio:project:$mode:$id"
+    echo "Setting project for mode $mode: $id"
     kv_put "$key" "$json"
     echo "✅ Project updated"
 }
 
 list_projects() {
-    echo "All projects:"
+    local mode=$1
+    validate_mode "$mode"
+
+    echo "Projects for mode: $mode"
     echo ""
 
-    local keys=$(kv_list "portfolio:project:" | jq -r '.[].name')
+    local keys=$(kv_list "portfolio:project:$mode:" | jq -r '.[].name')
 
     for key in $keys; do
-        local id=$(echo "$key" | sed 's/portfolio:project://')
+        local id=$(echo "$key" | sed "s/portfolio:project:$mode://")
         local content=$(kv_get "$key")
         local title=$(echo "$content" | jq -r '.title')
         echo "  $id: $title"
@@ -114,15 +122,16 @@ shift
 
 case "$command" in
     get)
-        if [ $# -ne 1 ]; then usage; fi
-        get_project "$1"
+        if [ $# -ne 2 ]; then usage; fi
+        get_project "$1" "$2"
         ;;
     set)
-        if [ $# -ne 2 ]; then usage; fi
-        set_project "$1" "$2"
+        if [ $# -ne 3 ]; then usage; fi
+        set_project "$1" "$2" "$3"
         ;;
     list)
-        list_projects
+        if [ $# -ne 1 ]; then usage; fi
+        list_projects "$1"
         ;;
     featured)
         if [ $# -ne 1 ]; then usage; fi
@@ -130,7 +139,9 @@ case "$command" in
         ;;
     set-featured)
         if [ $# -lt 2 ]; then usage; fi
-        set_featured "$@"
+        mode=$1
+        shift
+        set_featured "$mode" "$@"
         ;;
     *)
         echo "Unknown command: $command"

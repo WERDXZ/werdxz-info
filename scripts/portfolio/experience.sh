@@ -9,31 +9,34 @@ usage() {
 Usage: $0 <command> [options]
 
 Commands:
-    get <experience-id>              Get experience by ID
-    set <experience-id> <json-file>  Set experience from JSON file
-    list                             List all experiences
-    featured <mode>                  List featured experiences for mode
-    set-featured <mode> <id>...      Set featured experience IDs for mode
+    get <mode> <experience-id>            Get experience by mode and ID
+    set <mode> <experience-id> <json-file>  Set experience from JSON file
+    list <mode>                           List all experiences for mode
+    featured <mode>                       List featured experiences for mode
+    set-featured <mode> <id>...           Set featured experience IDs for mode
 
 Modes: ${MODES[*]}
 
 Examples:
-    $0 get rust-club
-    $0 set rust-club experience.json
-    $0 list
-    $0 featured software-engineer
-    $0 set-featured fullstack fullstack-dev rust-club
+    $0 get industry fullstack-dev
+    $0 set industry fullstack-dev experience.json
+    $0 list industry
+    $0 featured industry
+    $0 set-featured industry fullstack-dev archenemy
 EOF
     exit 1
 }
 
 get_experience() {
-    local id=$1
-    local key="portfolio:experience:$id"
+    local mode=$1
+    local id=$2
+    validate_mode "$mode"
+
+    local key="portfolio:experience:$mode:$id"
     local content=$(kv_get "$key")
 
     if [ -z "$content" ]; then
-        echo "No experience found with ID: $id"
+        echo "No experience found with mode: $mode, ID: $id"
         exit 1
     fi
 
@@ -41,8 +44,10 @@ get_experience() {
 }
 
 set_experience() {
-    local id=$1
-    local json_file=$2
+    local mode=$1
+    local id=$2
+    local json_file=$3
+    validate_mode "$mode"
 
     if [ ! -f "$json_file" ]; then
         echo "Error: file not found: $json_file"
@@ -52,20 +57,23 @@ set_experience() {
     local json=$(cat "$json_file")
     validate_json "$json" "$SCRIPT_DIR/../../portfolio/schemas/experience.json"
 
-    local key="portfolio:experience:$id"
-    echo "Setting experience: $id"
+    local key="portfolio:experience:$mode:$id"
+    echo "Setting experience for mode $mode: $id"
     kv_put "$key" "$json"
     echo "✅ Experience updated"
 }
 
 list_experiences() {
-    echo "All experiences:"
+    local mode=$1
+    validate_mode "$mode"
+
+    echo "Experiences for mode: $mode"
     echo ""
 
-    local keys=$(kv_list "portfolio:experience:" | jq -r '.[].name')
+    local keys=$(kv_list "portfolio:experience:$mode:" | jq -r '.[].name')
 
     for key in $keys; do
-        local id=$(echo "$key" | sed 's/portfolio:experience://')
+        local id=$(echo "$key" | sed "s/portfolio:experience:$mode://")
         local content=$(kv_get "$key")
         local role=$(echo "$content" | jq -r '.role')
         local company=$(echo "$content" | jq -r '.company')
@@ -115,15 +123,16 @@ shift
 
 case "$command" in
     get)
-        if [ $# -ne 1 ]; then usage; fi
-        get_experience "$1"
+        if [ $# -ne 2 ]; then usage; fi
+        get_experience "$1" "$2"
         ;;
     set)
-        if [ $# -ne 2 ]; then usage; fi
-        set_experience "$1" "$2"
+        if [ $# -ne 3 ]; then usage; fi
+        set_experience "$1" "$2" "$3"
         ;;
     list)
-        list_experiences
+        if [ $# -ne 1 ]; then usage; fi
+        list_experiences "$1"
         ;;
     featured)
         if [ $# -ne 1 ]; then usage; fi
@@ -131,7 +140,9 @@ case "$command" in
         ;;
     set-featured)
         if [ $# -lt 2 ]; then usage; fi
-        set_featured "$@"
+        mode=$1
+        shift
+        set_featured "$mode" "$@"
         ;;
     *)
         echo "Unknown command: $command"

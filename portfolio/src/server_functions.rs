@@ -38,7 +38,7 @@ pub async fn get_featured_projects(mode: Mode) -> Result<Vec<Project>, ServerFnE
     // Fetch all projects in parallel
     let mut projects = Vec::new();
     for id in ids {
-        let key = format!("portfolio:project:{}", id);
+        let key = format!("portfolio:project:{}:{}", mode.to_tag(), id);
         match worker_helpers::kv_get_text(&kv, &key).await {
             Ok(Some(json_str)) => {
                 match serde_json::from_str::<Project>(&json_str) {
@@ -91,7 +91,7 @@ pub async fn get_featured_experience(mode: Mode) -> Result<Vec<Experience>, Serv
     // Fetch all experiences in parallel
     let mut experiences = Vec::new();
     for id in ids {
-        let key = format!("portfolio:experience:{}", id);
+        let key = format!("portfolio:experience:{}:{}", mode.to_tag(), id);
         match worker_helpers::kv_get_text(&kv, &key).await {
             Ok(Some(json_str)) => {
                 match serde_json::from_str::<Experience>(&json_str) {

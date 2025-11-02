@@ -4,68 +4,48 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum Mode {
-    SoftwareEngineer,
-    Rust,
-    Student,
+    Industry,
+    Academia,
 }
 
 impl Mode {
     /// Convert from URL path segment
     pub fn from_path(path: &str) -> Self {
         match path {
-            "swe" => Mode::SoftwareEngineer,
-            "rust" => Mode::Rust,
-            "student" => Mode::Student,
-            _ => Mode::SoftwareEngineer,
+            "industry" => Mode::Industry,
+            "academia" => Mode::Academia,
+            _ => Mode::Industry,
         }
     }
 
     /// Convert to URL path segment
     pub fn to_path(&self) -> &'static str {
         match self {
-            Mode::SoftwareEngineer => "swe",
-            Mode::Rust => "rust",
-            Mode::Student => "student",
+            Mode::Industry => "industry",
+            Mode::Academia => "academia",
         }
     }
 
     /// Get KV namespace tag for this mode
     pub fn to_tag(&self) -> &'static str {
         match self {
-            Mode::SoftwareEngineer => "software-engineer",
-            Mode::Rust => "rust",
-            Mode::Student => "student",
+            Mode::Industry => "industry",
+            Mode::Academia => "academia",
         }
     }
 
     /// Get hero subtitle for this mode
     pub fn subtitle(&self) -> &'static str {
         match self {
-            Mode::SoftwareEngineer => "Software Engineer",
-            Mode::Rust => "Rust Developer",
-            Mode::Student => "Student & Developer",
-        }
-    }
-
-    /// Get hero description for this mode
-    pub fn description(&self) -> &'static str {
-        match self {
-            Mode::SoftwareEngineer => {
-                "Building scalable systems and developer tools with Rust, TypeScript, and modern cloud infrastructure."
-            }
-            Mode::Rust => {
-                "Systems programming and high-performance tools with Rust, WebAssembly, and native development."
-            }
-            Mode::Student => {
-                "Learning and building projects across systems programming, web development, and cloud infrastructure."
-            }
+            Mode::Industry => "Software Engineer",
+            Mode::Academia => "Researcher & Educator",
         }
     }
 }
 
 impl Default for Mode {
     fn default() -> Self {
-        Mode::SoftwareEngineer
+        Mode::Industry
     }
 }
 
@@ -117,7 +97,6 @@ pub struct BlogPost {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct HeroContent {
     pub subtitle: String,
-    pub description: String,
 }
 
 /// About section content from KV (mode-specific)

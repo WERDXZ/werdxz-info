@@ -43,10 +43,9 @@ pub fn App() -> impl IntoView {
         // content for this welcome page
         <Router>
             <Routes fallback=|| "Page not found.".into_view()>
-                <Route path=StaticSegment("") view=|| view! { <Redirect path="/swe"/> }/>
-                <Route path=StaticSegment("swe") view=HomePage/>
-                <Route path=StaticSegment("rust") view=HomePage/>
-                <Route path=StaticSegment("student") view=HomePage/>
+                <Route path=StaticSegment("") view=|| view! { <Redirect path="/industry"/> }/>
+                <Route path=StaticSegment("industry") view=HomePage/>
+                <Route path=StaticSegment("academia") view=HomePage/>
             </Routes>
         </Router>
     }

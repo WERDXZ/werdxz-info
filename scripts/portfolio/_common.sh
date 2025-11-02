@@ -7,7 +7,7 @@ set -euo pipefail
 NAMESPACE="ad9607c404424a8eb6949994a4383845"
 
 # Valid modes
-MODES=("software-engineer" "rust" "student")
+MODES=("industry" "academia")
 
 # Check if mode is valid
 validate_mode() {

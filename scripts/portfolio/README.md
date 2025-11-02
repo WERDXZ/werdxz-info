@@ -12,9 +12,8 @@ Shell scripts for managing portfolio content in Cloudflare KV.
 ## Modes
 
 Valid portfolio modes:
-- `software-engineer` (path: `/swe`, `/` redirects here)
-- `rust` (path: `/rust`)
-- `student` (path: `/student`)
+- `industry` (path: `/industry`, `/` redirects here) - Production systems, DevOps, cloud infrastructure
+- `academia` (path: `/academia`) - Research, Rust evangelism, teaching, campus work
 
 ## Hero Content
 
@@ -38,12 +37,12 @@ Valid portfolio modes:
 ./scripts/portfolio/about.sh list
 
 # Get about content for a mode
-./scripts/portfolio/about.sh get rust
+./scripts/portfolio/about.sh get industry
 
 # Set about content for a mode (multiple paragraphs)
-./scripts/portfolio/about.sh set rust \
-    "I'm a Rust developer specializing in systems programming." \
-    "My focus is on building high-performance, reliable software."
+./scripts/portfolio/about.sh set academia \
+    "I explore Rust's viability in non-traditional domains." \
+    "Currently researching Rust for ML, penetration testing, and embedded systems."
 ```
 
 ## Projects
@@ -78,10 +77,10 @@ Valid portfolio modes:
 ./scripts/portfolio/experience.sh set rust-club experience.json
 
 # List featured experiences for a mode
-./scripts/portfolio/experience.sh featured student
+./scripts/portfolio/experience.sh featured academia
 
 # Set featured experiences for a mode
-./scripts/portfolio/experience.sh set-featured rust systems-engineer rust-club performance-optimization
+./scripts/portfolio/experience.sh set-featured industry fullstack-dev systems-engineer
 ```
 
 ## JSON Schemas

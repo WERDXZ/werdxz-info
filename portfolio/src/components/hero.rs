@@ -80,11 +80,9 @@ pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
                             match result {
                                 Ok(content) => view! {
                                     <p>{content.subtitle}</p>
-                                    <p>{content.description}</p>
                                 }.into_any(),
                                 Err(_) => view! {
-                                    <p>"Software Engineer"</p>
-                                    <p>"Building scalable systems."</p>
+                                    <p>{mode.get().subtitle()}</p>
                                 }.into_any()
                             }
                         })
@@ -121,14 +119,11 @@ pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
                 </div>
 
                 <div class="mode-switcher" aria-label="Portfolio modes">
-                    <a href="/swe" class:active=move || matches!(mode.get(), Mode::SoftwareEngineer)>
-                        "SWE"
+                    <a href="/industry" class:active=move || matches!(mode.get(), Mode::Industry)>
+                        "Industry"
                     </a>
-                    <a href="/rust" class:active=move || matches!(mode.get(), Mode::Rust)>
-                        "Rust"
-                    </a>
-                    <a href="/student" class:active=move || matches!(mode.get(), Mode::Student)>
-                        "Student"
+                    <a href="/academia" class:active=move || matches!(mode.get(), Mode::Academia)>
+                        "Academia"
                     </a>
                 </div>
             </footer>

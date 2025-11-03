@@ -78,7 +78,14 @@ fn HomePage() -> impl IntoView {
             <ProjectsSection mode=mode.into()/>
             <WritingSection mode=mode.into()/>
             <footer>
-                <p>"© 2025 werdxz"</p>
+                <p>"© 2025 Jiqing Yang"</p>
+                <p class="license">
+                    "Source code licensed under "
+                    <a href="https://github.com/werdxz/werdxz-info/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">"MIT"</a>
+                    ". Contents licensed under "
+                    <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">"CC BY-SA 4.0"</a>
+                    "."
+                </p>
             </footer>
         </main>
     }

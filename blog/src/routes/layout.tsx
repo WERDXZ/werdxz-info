@@ -26,7 +26,26 @@ export default component$(() => {
       </main>
 
       <footer class={styles.footer}>
-        <p>&copy; {new Date().getFullYear()} werdxz</p>
+        <p>© {new Date().getFullYear()} Jiqing Yang</p>
+        <p class={styles.license}>
+          Source code licensed under{" "}
+          <a
+            href="https://github.com/werdxz/werdxz-info/blob/main/LICENSE"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            MIT
+          </a>
+          . Contents licensed under{" "}
+          <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            CC BY-SA 4.0
+          </a>
+          .
+        </p>
       </footer>
     </>
   );

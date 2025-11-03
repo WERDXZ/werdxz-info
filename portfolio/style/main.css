@@ -368,6 +368,21 @@ main > footer p {
   font-size: var(--font-size-sm);
   color: var(--color-text-tertiary);
   text-align: center;
+  margin: var(--spacing-sm) 0;
+}
+
+main > footer .license {
+  font-size: var(--font-size-xs);
+}
+
+main > footer .license a {
+  color: var(--color-text-tertiary);
+  text-decoration: underline;
+  transition: color var(--transition-base);
+}
+
+main > footer .license a:hover {
+  color: var(--color-text-link);
 }
 
 /* Loading and Empty States */

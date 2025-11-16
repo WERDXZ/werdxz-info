@@ -1,4 +1,4 @@
-/// Global constants for the portfolio application
+//! Global constants for the portfolio application
 
 /// Base URL for the blog site (used for linking to posts)
 pub const BLOG_BASE_URL: &str = "https://blog.werdxz.info";

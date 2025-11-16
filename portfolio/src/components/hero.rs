@@ -4,7 +4,7 @@ use crate::{get_hero_content, types::Mode};
 #[component]
 pub fn Hero(mode: Signal<Mode>, has_posts: Signal<bool>) -> impl IntoView {
     // Fetch hero content from KV
-    let hero_content = Resource::new(move || mode.get(), |mode| get_hero_content(mode));
+    let hero_content = Resource::new(move || mode.get(), get_hero_content);
 
     #[allow(unused_variables)]
     let (active_section, set_active_section) = signal("about".to_string());

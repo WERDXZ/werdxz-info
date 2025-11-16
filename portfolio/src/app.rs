@@ -63,10 +63,10 @@ fn HomePage() -> impl IntoView {
     });
 
     // Fetch posts to determine if Writing section should be shown
-    let posts = Resource::new(move || mode.get(), |mode| get_featured_posts(mode));
+    let posts = Resource::new(move || mode.get(), get_featured_posts);
     let has_posts = Memo::new(move |_| {
-        posts.get().map_or(false, |result| {
-            result.as_ref().map_or(false, |posts| !posts.is_empty())
+        posts.get().is_some_and(|result| {
+            result.as_ref().is_ok_and(|posts| !posts.is_empty())
         })
     });
 

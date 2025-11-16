@@ -27,7 +27,7 @@ async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     // Handle OPTIONS preflight
     if req.method() == Method::Options {
         let response = middleware::handle_options()?;
-        let duration_ms = (Date::now().as_millis() - start) as u64;
+        let duration_ms = Date::now().as_millis() - start;
         logging::log_response(&request_id, 204, duration_ms);
         return Ok(response);
     }
@@ -55,7 +55,7 @@ async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     let response = middleware::add_request_id_header(response, &request_id)?;
 
     // Log response
-    let duration_ms = (Date::now().as_millis() - start) as u64;
+    let duration_ms = Date::now().as_millis() - start;
     let status = response.status_code();
     logging::log_response(&request_id, status, duration_ms);
 

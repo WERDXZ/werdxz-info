@@ -3,7 +3,7 @@ use crate::{get_featured_experience, types::{Experience, Mode}};
 
 #[component]
 pub fn ExperienceSection(mode: Signal<Mode>) -> impl IntoView {
-    let experiences = Resource::new(move || mode.get(), |mode| get_featured_experience(mode));
+    let experiences = Resource::new(move || mode.get(), get_featured_experience);
 
     view! {
         <section id="experience" class="experience-section">

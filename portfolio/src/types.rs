@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 /// Portfolio mode/persona
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum Mode {
+    #[default]
     Industry,
     Academia,
 }
@@ -40,12 +41,6 @@ impl Mode {
             Mode::Industry => "Software Engineer",
             Mode::Academia => "Researcher & Educator",
         }
-    }
-}
-
-impl Default for Mode {
-    fn default() -> Self {
-        Mode::Industry
     }
 }
 

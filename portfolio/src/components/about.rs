@@ -4,7 +4,7 @@ use crate::get_about_content;
 #[component]
 pub fn AboutSection(mode: Signal<crate::types::Mode>) -> impl IntoView {
     // Fetch about content from KV
-    let about_content = Resource::new(move || mode.get(), |mode| get_about_content(mode));
+    let about_content = Resource::new(move || mode.get(), get_about_content);
 
     view! {
         <section id="about" class="about-section">

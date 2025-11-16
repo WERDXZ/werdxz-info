@@ -3,7 +3,7 @@ use crate::{get_featured_projects, types::{Mode, Project, ProjectLink}};
 
 #[component]
 pub fn ProjectsSection(mode: Signal<Mode>) -> impl IntoView {
-    let projects = Resource::new(move || mode.get(), |mode| get_featured_projects(mode));
+    let projects = Resource::new(move || mode.get(), get_featured_projects);
 
     view! {
         <section id="projects" class="projects-section">

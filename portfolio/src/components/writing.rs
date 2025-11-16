@@ -3,7 +3,7 @@ use leptos::prelude::*;
 
 #[component]
 pub fn WritingSection(mode: Signal<Mode>) -> impl IntoView {
-    let posts = Resource::new(move || mode.get(), |mode| get_featured_posts(mode));
+    let posts = Resource::new(move || mode.get(), get_featured_posts);
 
     view! {
         <Suspense fallback=|| view! { <></> }>
@@ -22,7 +22,7 @@ pub fn WritingSection(mode: Signal<Mode>) -> impl IntoView {
                                 </section>
                             }.into_any()
                         }
-                        _ => view! { <></> }.into_any()
+                        _ => ().into_any()
                     }
                 })
             }}

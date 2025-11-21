@@ -39,7 +39,7 @@ impl Mode {
     pub fn subtitle(&self) -> &'static str {
         match self {
             Mode::Industry => "Software Engineer",
-            Mode::Academia => "Researcher & Educator",
+            Mode::Academia => "Student",
         }
     }
 }

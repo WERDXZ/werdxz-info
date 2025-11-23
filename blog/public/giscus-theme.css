@@ -1,0 +1,203 @@
+/*
+ * Custom Giscus Theme for werdxz.info
+ * Based on Gruvbox Dark palette to match blog code highlighting
+ * Supports prefers-color-scheme for light/dark mode
+ */
+
+/* Gruvbox color palette */
+:root {
+  /* Gruvbox Dark */
+  --gruvbox-bg: #282828;
+  --gruvbox-bg-soft: #32302f;
+  --gruvbox-bg-hard: #1d2021;
+  --gruvbox-bg1: #3c3836;
+  --gruvbox-bg2: #504945;
+  --gruvbox-bg3: #665c54;
+  --gruvbox-bg4: #7c6f64;
+
+  --gruvbox-fg: #ebdbb2;
+  --gruvbox-fg0: #fbf1c7;
+  --gruvbox-fg1: #ebdbb2;
+  --gruvbox-fg2: #d5c4a1;
+  --gruvbox-fg3: #bdae93;
+  --gruvbox-fg4: #a89984;
+
+  --gruvbox-red: #fb4934;
+  --gruvbox-green: #b8bb26;
+  --gruvbox-yellow: #fabd2f;
+  --gruvbox-blue: #83a598;
+  --gruvbox-purple: #d3869b;
+  --gruvbox-aqua: #8ec07c;
+  --gruvbox-orange: #fe8019;
+  --gruvbox-gray: #928374;
+}
+
+/* Dark mode (default for gruvbox) */
+main {
+  /* Syntax highlighting */
+  --color-prettylights-syntax-comment: var(--gruvbox-gray);
+  --color-prettylights-syntax-constant: var(--gruvbox-purple);
+  --color-prettylights-syntax-entity: var(--gruvbox-green);
+  --color-prettylights-syntax-storage-modifier-import: var(--gruvbox-fg);
+  --color-prettylights-syntax-entity-tag: var(--gruvbox-aqua);
+  --color-prettylights-syntax-keyword: var(--gruvbox-red);
+  --color-prettylights-syntax-string: var(--gruvbox-green);
+  --color-prettylights-syntax-variable: var(--gruvbox-blue);
+  --color-prettylights-syntax-brackethighlighter-unmatched: var(--gruvbox-red);
+  --color-prettylights-syntax-invalid-illegal-text: var(--gruvbox-fg0);
+  --color-prettylights-syntax-invalid-illegal-bg: var(--gruvbox-red);
+  --color-prettylights-syntax-carriage-return-text: var(--gruvbox-fg0);
+  --color-prettylights-syntax-carriage-return-bg: var(--gruvbox-red);
+  --color-prettylights-syntax-string-regexp: var(--gruvbox-aqua);
+  --color-prettylights-syntax-markup-list: var(--gruvbox-yellow);
+  --color-prettylights-syntax-markup-heading: var(--gruvbox-blue);
+  --color-prettylights-syntax-markup-italic: var(--gruvbox-fg);
+  --color-prettylights-syntax-markup-bold: var(--gruvbox-fg);
+  --color-prettylights-syntax-markup-deleted-text: var(--gruvbox-red);
+  --color-prettylights-syntax-markup-deleted-bg: var(--gruvbox-bg-hard);
+  --color-prettylights-syntax-markup-inserted-text: var(--gruvbox-green);
+  --color-prettylights-syntax-markup-inserted-bg: var(--gruvbox-bg-hard);
+  --color-prettylights-syntax-markup-changed-text: var(--gruvbox-orange);
+  --color-prettylights-syntax-markup-changed-bg: var(--gruvbox-bg-hard);
+  --color-prettylights-syntax-markup-ignored-text: var(--gruvbox-fg2);
+  --color-prettylights-syntax-markup-ignored-bg: var(--gruvbox-blue);
+  --color-prettylights-syntax-meta-diff-range: var(--gruvbox-purple);
+  --color-prettylights-syntax-sublimelinter-gutter-mark: var(--gruvbox-bg4);
+
+  /* UI colors */
+  --color-fg-default: var(--gruvbox-fg);
+  --color-fg-muted: var(--gruvbox-fg4);
+  --color-fg-subtle: var(--gruvbox-gray);
+
+  --color-canvas-default: var(--gruvbox-bg);
+  --color-canvas-overlay: var(--gruvbox-bg-soft);
+  --color-canvas-inset: var(--gruvbox-bg-hard);
+  --color-canvas-subtle: var(--gruvbox-bg1);
+
+  --color-border-default: var(--gruvbox-bg2);
+  --color-border-muted: var(--gruvbox-bg1);
+  --color-border-subtle: rgba(146, 131, 116, 0.2);
+
+  /* Accent colors */
+  --color-accent-fg: var(--gruvbox-blue);
+  --color-accent-emphasis: var(--gruvbox-blue);
+  --color-accent-muted: rgba(131, 165, 152, 0.4);
+  --color-accent-subtle: rgba(131, 165, 152, 0.15);
+
+  /* Status colors */
+  --color-success-fg: var(--gruvbox-green);
+  --color-success-emphasis: var(--gruvbox-green);
+  --color-success-muted: rgba(184, 187, 38, 0.4);
+  --color-success-subtle: rgba(184, 187, 38, 0.15);
+
+  --color-attention-fg: var(--gruvbox-yellow);
+  --color-attention-emphasis: var(--gruvbox-yellow);
+  --color-attention-muted: rgba(250, 189, 47, 0.4);
+  --color-attention-subtle: rgba(250, 189, 47, 0.15);
+
+  --color-danger-fg: var(--gruvbox-red);
+  --color-danger-emphasis: var(--gruvbox-red);
+  --color-danger-muted: rgba(251, 73, 52, 0.4);
+  --color-danger-subtle: rgba(251, 73, 52, 0.15);
+
+  /* Neutral colors */
+  --color-neutral-emphasis-plus: var(--gruvbox-fg4);
+  --color-neutral-emphasis: var(--gruvbox-bg4);
+  --color-neutral-muted: rgba(124, 111, 100, 0.4);
+  --color-neutral-subtle: rgba(124, 111, 100, 0.1);
+
+  /* Button styles */
+  --color-btn-text: var(--gruvbox-fg);
+  --color-btn-bg: var(--gruvbox-bg1);
+  --color-btn-border: var(--gruvbox-bg2);
+  --color-btn-hover-bg: var(--gruvbox-bg2);
+  --color-btn-hover-border: var(--gruvbox-bg3);
+  --color-btn-active-bg: var(--gruvbox-bg3);
+  --color-btn-active-border: var(--gruvbox-bg4);
+  --color-btn-selected-bg: var(--gruvbox-bg2);
+
+  --color-btn-primary-text: var(--gruvbox-bg-hard);
+  --color-btn-primary-bg: var(--gruvbox-green);
+  --color-btn-primary-border: var(--gruvbox-green);
+  --color-btn-primary-hover-bg: #a9b522;
+  --color-btn-primary-hover-border: #a9b522;
+  --color-btn-primary-selected-bg: var(--gruvbox-green);
+  --color-btn-primary-disabled-text: rgba(29, 32, 33, 0.5);
+  --color-btn-primary-disabled-bg: rgba(184, 187, 38, 0.6);
+  --color-btn-primary-disabled-border: transparent;
+
+  /* Background for giscus homepage */
+  --color-social-reaction-bg-hover: var(--gruvbox-bg1);
+  --color-social-reaction-bg-reacted-hover: var(--gruvbox-bg2);
+}
+
+/* Light mode override */
+@media (prefers-color-scheme: light) {
+  main {
+    /* Gruvbox Light palette */
+    --color-fg-default: #3c3836;
+    --color-fg-muted: #7c6f64;
+    --color-fg-subtle: #928374;
+
+    --color-canvas-default: #fbf1c7;
+    --color-canvas-overlay: #f9f5d7;
+    --color-canvas-inset: #f2e5bc;
+    --color-canvas-subtle: #ebdbb2;
+
+    --color-border-default: #d5c4a1;
+    --color-border-muted: #ebdbb2;
+    --color-border-subtle: rgba(60, 56, 54, 0.15);
+
+    --color-accent-fg: #076678;
+    --color-accent-emphasis: #076678;
+    --color-accent-muted: rgba(7, 102, 120, 0.4);
+    --color-accent-subtle: rgba(7, 102, 120, 0.1);
+
+    --color-success-fg: #79740e;
+    --color-success-emphasis: #79740e;
+    --color-danger-fg: #9d0006;
+    --color-danger-emphasis: #9d0006;
+    --color-attention-fg: #b57614;
+    --color-attention-emphasis: #b57614;
+
+    --color-btn-text: #3c3836;
+    --color-btn-bg: #ebdbb2;
+    --color-btn-border: #d5c4a1;
+    --color-btn-hover-bg: #d5c4a1;
+    --color-btn-hover-border: #bdae93;
+
+    --color-btn-primary-text: #fbf1c7;
+    --color-btn-primary-bg: #79740e;
+    --color-btn-primary-border: #79740e;
+    --color-btn-primary-hover-bg: #98971a;
+    --color-btn-primary-hover-border: #98971a;
+
+    /* Syntax for light mode */
+    --color-prettylights-syntax-comment: #928374;
+    --color-prettylights-syntax-constant: #8f3f71;
+    --color-prettylights-syntax-entity: #79740e;
+    --color-prettylights-syntax-keyword: #9d0006;
+    --color-prettylights-syntax-string: #79740e;
+    --color-prettylights-syntax-variable: #076678;
+  }
+}
+
+/* Custom tweaks for better integration */
+.gsc-main {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.gsc-comment-box-textarea {
+  font-family: inherit;
+}
+
+/* Loading state background */
+.gsc-loading-image {
+  background-image: url("https://github.githubassets.com/images/mona-loading-dark.gif");
+}
+
+@media (prefers-color-scheme: light) {
+  .gsc-loading-image {
+    background-image: url("https://github.githubassets.com/images/mona-loading-default.gif");
+  }
+}

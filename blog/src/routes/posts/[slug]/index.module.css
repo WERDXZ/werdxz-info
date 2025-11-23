@@ -168,6 +168,19 @@ article {
   margin: var(--spacing-3xl) 0;
 }
 
+.comments {
+  margin-top: var(--spacing-3xl);
+  padding-top: var(--spacing-2xl);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.commentsTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+}
+
 .notFound {
   padding: var(--spacing-3xl) 0;
   grid-column: 3 / 8;

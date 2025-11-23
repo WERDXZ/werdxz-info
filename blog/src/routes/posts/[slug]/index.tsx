@@ -86,6 +86,27 @@ export default component$(() => {
       </header>
 
       <section class={styles.content} dangerouslySetInnerHTML={htmlContent} />
+
+      <section class={styles.comments}>
+        <h2 class={styles.commentsTitle}>Comments</h2>
+        <script
+          src="https://giscus.app/client.js"
+          data-repo="WERDXZ/blog"
+          data-repo-id="R_kgDOQbQopQ"
+          data-category="Announcements"
+          data-category-id="DIC_kwDOQbQopc4CyG6N"
+          data-mapping="og:title"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="https://blog.werdxz.info/giscus-theme.css"
+          data-lang="en"
+          data-loading="lazy"
+          crossOrigin="anonymous"
+          async
+        />
+      </section>
     </article>
   );
 });

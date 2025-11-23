@@ -16,3 +16,7 @@ Use `@/openspec/AGENTS.md` to learn:
 Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
+
+## Version Control
+
+This project uses **Jujutsu (jj)** as the VCS, with git as the backend. Use `jj` commands instead of `git` for version control operations.

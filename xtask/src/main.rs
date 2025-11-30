@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
+use regex::Regex;
 use serde::Deserialize;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -463,6 +464,72 @@ fn migrate(workspace_root: &Path, remote: bool) -> Result<()> {
     Ok(())
 }
 
+/// Extract relative image paths from markdown content
+/// Returns paths like "./image.png" or "screenshot.png"
+fn extract_relative_images(content: &str) -> Vec<String> {
+    let re = Regex::new(r"!\[[^\]]*\]\(([^)]+)\)").unwrap();
+    let mut images = Vec::new();
+
+    for caps in re.captures_iter(content) {
+        let url = &caps[1];
+        // Skip absolute URLs
+        if !url.starts_with("http://") && !url.starts_with("https://") {
+            images.push(url.to_string());
+        }
+    }
+
+    images
+}
+
+/// Upload images referenced in markdown to R2
+fn upload_post_images(
+    workspace_root: &Path,
+    markdown_dir: &Path,
+    slug: &str,
+    bucket_name: &str,
+    images: &[String],
+    remote: bool,
+) -> Result<()> {
+    for image_path in images {
+        // Remove leading ./ if present
+        let clean_path = image_path.strip_prefix("./").unwrap_or(image_path);
+
+        // Resolve the image file path relative to the markdown file's directory
+        let image_file = markdown_dir.join(clean_path);
+
+        if !image_file.exists() {
+            eprintln!("  Warning: Image not found: {}", image_file.display());
+            continue;
+        }
+
+        // Upload to R2 at posts/{slug}/{filename}
+        let r2_key = format!("posts/{}/{}", slug, clean_path);
+        let r2_path = format!("{}/{}", bucket_name, r2_key);
+
+        status!("Uploading", "image: {}", clean_path);
+
+        let mut cmd = Command::new("npx");
+        cmd.args(["wrangler", "r2", "object", "put", &r2_path]);
+
+        if remote {
+            cmd.arg("--remote");
+        }
+
+        cmd.arg("--file")
+            .arg(&image_file)
+            .current_dir(workspace_root.join("api"));
+
+        let status = cmd.status()
+            .context(format!("Failed to upload image: {}", clean_path))?;
+
+        if !status.success() {
+            anyhow::bail!("Failed to upload image: {}", clean_path);
+        }
+    }
+
+    Ok(())
+}
+
 fn publish_post(
     workspace_root: &Path,
     file: &str,
@@ -499,16 +566,33 @@ fn publish_post(
         })
         .context("CONTENT_BUCKET not found in wrangler.toml")?;
 
-    // 1. Upload markdown to R2
-    let r2_key = format!("posts/{}.md", content_id);
-    let r2_path = format!("{}/{}", bucket_name, r2_key);
-
     // Resolve file path relative to workspace root before changing directories
     let file_path = if Path::new(file).is_absolute() {
         PathBuf::from(file)
     } else {
         workspace_root.join(file)
     };
+
+    // Get the directory containing the markdown file (for resolving relative image paths)
+    let markdown_dir = file_path.parent()
+        .context("Could not determine markdown file directory")?;
+
+    // Read markdown content to find images
+    let content = std::fs::read_to_string(&file_path)
+        .context("Failed to read markdown file")?;
+
+    // Extract and upload any relative images
+    let images = extract_relative_images(&content);
+    if !images.is_empty() {
+        status!("Found", "{} image(s) to upload", images.len());
+        upload_post_images(workspace_root, markdown_dir, slug, &bucket_name, &images, remote)?;
+    }
+
+    // 1. Upload markdown to R2
+    let r2_key = format!("posts/{}.md", content_id);
+    let r2_path = format!("{}/{}", bucket_name, r2_key);
+
+    status!("Uploading", "markdown content");
 
     let mut r2_cmd = Command::new("npx");
     r2_cmd.args(["wrangler", "r2", "object", "put", &r2_path]);

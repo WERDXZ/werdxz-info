@@ -28,7 +28,7 @@
 }
 
 .postsSection {
-  grid-column: 3 / 7;
+  grid-column: 3 / 8;
 }
 
 .searchInput {
@@ -45,7 +45,7 @@
 }
 
 .searchInput:focus {
-  border-bottom-color: var(--color-accent-primary);
+  border-bottom-color: var(--color-text-link);
 }
 
 .searchInput::placeholder {
@@ -73,11 +73,11 @@
 }
 
 .tagSelect:hover {
-  border-bottom-color: var(--color-accent-primary);
+  border-bottom-color: var(--color-text-link);
 }
 
 .tagSelect:focus {
-  border-bottom-color: var(--color-accent-primary);
+  border-bottom-color: var(--color-text-link);
 }
 
 .postsList {

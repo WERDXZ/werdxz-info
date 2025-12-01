@@ -4,7 +4,8 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 import { fetchPost } from "~/lib/api";
 import { formatPostDate } from "~/lib/date";
-import { renderMarkdown } from "~/lib/markdown";
+import { renderMarkdown, extractHeadings } from "~/lib/markdown";
+import { TableOfContents } from "~/components/table-of-contents";
 import styles from "./index.module.css";
 
 export const usePost = routeLoader$(async ({ params, status }) => {
@@ -12,11 +13,13 @@ export const usePost = routeLoader$(async ({ params, status }) => {
     const post = await fetchPost(params.slug);
 
     let htmlContent = "";
+    let headings: { id: string; text: string; level: number }[] = [];
     if (post.content) {
       htmlContent = await renderMarkdown(post.content);
+      headings = extractHeadings(post.content);
     }
 
-    return { post, htmlContent };
+    return { post, htmlContent, headings };
   } catch (error) {
     console.error("[SSR] Failed to fetch post:", params.slug, error);
     status(404);
@@ -59,61 +62,65 @@ export default component$(() => {
     );
   }
 
-  const { post, htmlContent} = data;
+  const { post, htmlContent, headings } = data;
   const date = formatPostDate(post.published_at);
 
   return (
-    <article>
-      <Link href="/" class={styles.backLink}>
-        ← Back to Blog
-      </Link>
+    <>
+      <nav class={styles.breadcrumb} aria-label="Breadcrumb">
+        <Link href="/">Blog</Link> / {post.title}
+      </nav>
 
-      <header class={styles.header}>
-        <h1 class={styles.title}>{post.title}</h1>
-        <p class={styles.meta}>
-          <time class={styles.date} dateTime={post.published_at}>
-            {date}
-          </time>
-          {post.read_time_minutes && (
-            <span class={styles.readTime}>
-              {post.read_time_minutes} min read
-            </span>
+      <TableOfContents headings={headings} />
+
+      <article class={styles.article}>
+        <header class={styles.header}>
+          <h1 class={styles.title}>{post.title}</h1>
+          <p class={styles.meta}>
+            <time class={styles.date} dateTime={post.published_at}>
+              {date}
+            </time>
+            {post.read_time_minutes && (
+              <span class={styles.readTime}>
+                {post.read_time_minutes} min read
+              </span>
+            )}
+          </p>
+          {post.tags && post.tags.length > 0 && (
+            <ul class={styles.tags}>
+              {post.tags.map((tag) => (
+                <li key={tag} class={styles.tag}>
+                  <Link href={`/?tags=${tag}`}>{tag}</Link>
+                </li>
+              ))}
+            </ul>
           )}
-        </p>
-        {post.tags && post.tags.length > 0 && (
-          <ul class={styles.tags}>
-            {post.tags.map((tag) => (
-              <li key={tag} class={styles.tag}>
-                <Link href={`/?tags=${tag}`}>{tag}</Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </header>
+        </header>
 
-      <section class={styles.content} dangerouslySetInnerHTML={htmlContent} />
+        <section class={styles.content} dangerouslySetInnerHTML={htmlContent} />
 
-      <section class={styles.comments}>
-        <h2 class={styles.commentsTitle}>Comments</h2>
-        <script
-          src="https://giscus.app/client.js"
-          data-repo="WERDXZ/blog"
-          data-repo-id="R_kgDOQbQopQ"
-          data-category="Announcements"
-          data-category-id="DIC_kwDOQbQopc4CyG6N"
-          data-mapping="og:title"
-          data-strict="0"
-          data-reactions-enabled="1"
-          data-emit-metadata="0"
-          data-input-position="bottom"
-          data-theme="https://blog.werdxz.info/giscus-theme.css"
-          data-lang="en"
-          data-loading="lazy"
-          crossOrigin="anonymous"
-          async
-        />
-      </section>
-    </article>
+        <section class={styles.comments}>
+          <h2 class={styles.commentsTitle}>Comments</h2>
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="WERDXZ/blog"
+            data-repo-id="R_kgDOQbQopQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOQbQopc4CyG6N"
+            data-mapping="og:title"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-theme="https://blog.werdxz.info/giscus-theme.css"
+            data-lang="en"
+            data-loading="lazy"
+            crossOrigin="anonymous"
+            async
+          />
+        </section>
+      </article>
+    </>
   );
 });
 

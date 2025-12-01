@@ -1,18 +1,23 @@
-/* Content uses layout.module.css max-width, no need for container */
-
-article {
+/* Breadcrumb */
+.breadcrumb {
   grid-column: 3 / 8;
-}
-
-.backLink {
-  display: inline-block;
-  color: var(--color-text-secondary);
   margin-bottom: var(--spacing-xl);
   font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
-.backLink:hover {
+.breadcrumb a {
   color: var(--color-text-link);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* Article */
+.article {
+  grid-column: 3 / 8;
 }
 
 .header {
@@ -205,7 +210,8 @@ article {
 }
 
 @media (max-width: 768px) {
-  article,
+  .breadcrumb,
+  .article,
   .notFound {
     grid-column: 1 / -1;
   }

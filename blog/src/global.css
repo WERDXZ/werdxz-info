@@ -46,3 +46,65 @@ a:hover {
     padding: 0 var(--spacing-md);
   }
 }
+
+/* GFM Alert styles */
+.markdown-alert {
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  border-left: 4px solid;
+  border-radius: 4px;
+  background-color: var(--color-bg-secondary);
+}
+
+.markdown-alert-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.markdown-alert-title svg {
+  width: 1em;
+  height: 1em;
+}
+
+.markdown-alert-note {
+  border-color: var(--blue);
+}
+
+.markdown-alert-note .markdown-alert-title {
+  color: var(--blue);
+}
+
+.markdown-alert-tip {
+  border-color: var(--green);
+}
+
+.markdown-alert-tip .markdown-alert-title {
+  color: var(--green);
+}
+
+.markdown-alert-important {
+  border-color: var(--purple);
+}
+
+.markdown-alert-important .markdown-alert-title {
+  color: var(--purple);
+}
+
+.markdown-alert-warning {
+  border-color: var(--yellow);
+}
+
+.markdown-alert-warning .markdown-alert-title {
+  color: var(--yellow);
+}
+
+.markdown-alert-caution {
+  border-color: var(--red);
+}
+
+.markdown-alert-caution .markdown-alert-title {
+  color: var(--red);
+}

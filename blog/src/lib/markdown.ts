@@ -1,6 +1,6 @@
 import { marked } from "marked";
-import markedKatex from "marked-katex-extension";
 import markedAlert from "marked-alert";
+import katexExtension from "./katex-extension";
 
 export interface TocHeading {
   id: string;
@@ -67,25 +67,24 @@ const renderer = {
 };
 
 // Configure marked with GFM (GitHub Flavored Markdown)
+// NOTE: breaks: false is required for KaTeX block math to work properly
+// With breaks: true, newlines become <br> before KaTeX can tokenize $$...$$ blocks
 marked.setOptions({
   gfm: true,
-  breaks: true,
+  breaks: false,
 });
 
-// Add custom renderer for heading IDs
-marked.use({ renderer });
+// Add KaTeX extension FIRST - it needs to tokenize math blocks before other processing
+marked.use(katexExtension({
+  throwOnError: false,
+  nonStandard: true,
+}));
 
 // Add GFM alerts extension ([!NOTE], [!WARNING], etc.)
 marked.use(markedAlert());
 
-// Add KaTeX extension for LaTeX math rendering
-// Supports $inline$ and $$block$$ math
-marked.use(
-  markedKatex({
-    throwOnError: false,
-    output: "html",
-  })
-);
+// Add custom renderer for heading IDs LAST
+marked.use({ renderer });
 
 /**
  * Renders markdown to HTML with LaTeX math and GFM alerts support

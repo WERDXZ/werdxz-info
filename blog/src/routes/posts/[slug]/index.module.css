@@ -96,6 +96,13 @@ article {
   margin-bottom: var(--spacing-md);
 }
 
+.content h1 code,
+.content h2 code,
+.content h3 code,
+.content h4 code {
+  font-size: inherit;
+}
+
 .content p {
   margin-bottom: var(--spacing-lg);
 }

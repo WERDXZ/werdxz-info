@@ -32,8 +32,14 @@ export default component$(() => {
   useVisibleTask$(() => {
     if (typeof window === 'undefined') return;
 
-    // Dynamically import highlight.js to avoid SSR issues
-    import('highlight.js').then((hljs) => {
+    // Dynamically import highlight.js and WGSL language definition
+    Promise.all([
+      import('highlight.js'),
+      import('~/lib/hljs-wgsl'),
+    ]).then(([hljs, wgslModule]) => {
+      // Register WGSL language
+      hljs.default.registerLanguage('wgsl', wgslModule.default);
+
       // Highlight all code blocks
       document.querySelectorAll('pre code').forEach((block) => {
         hljs.default.highlightElement(block as HTMLElement);

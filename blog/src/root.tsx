@@ -23,6 +23,13 @@ export default component$(() => {
             href={`${import.meta.env.BASE_URL}manifest.json`}
           />
         )}
+        {/* KaTeX CSS for LaTeX math rendering */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css"
+          integrity="sha384-WcoG4HRXMzYzfCgiyfrySxx90XSl2rxY5mnVY5TwtWE6KLrArNKn0T/mOgNL0Mmi"
+          crossOrigin="anonymous"
+        />
         <RouterHead />
       </head>
       <body lang="en">

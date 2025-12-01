@@ -263,6 +263,7 @@ body {
 /* Project Detail */
 .project-detail {
   grid-column: 3 / 8;
+  min-width: 0;
 }
 
 .detail-header {
@@ -512,7 +513,11 @@ body {
   .main,
   .breadcrumb,
   .project-detail,
-  .toc-mobile {
+  .toc-mobile,
+  .search-input,
+  .search-results-count,
+  .no-results,
+  .project-card {
     grid-column: 1 / -1;
   }
 

@@ -6,6 +6,7 @@ export default define.layout(function Layout({ Component }: PageProps) {
   return (
     <>
       <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="https://cloud.werdxz.info/shared/styles/variables.css" />
         <link rel="stylesheet" href="/styles.css" />
       </Head>

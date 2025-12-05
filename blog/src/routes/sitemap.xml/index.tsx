@@ -84,3 +84,17 @@ export const onGet: RequestHandler = async ({ send, cacheControl }) => {
     }));
   }
 };
+
+export const onHead: RequestHandler = async ({ send, cacheControl }) => {
+  cacheControl({
+    public: true,
+    maxAge: 3600,
+    sMaxAge: 3600,
+    staleWhileRevalidate: 86400,
+  });
+
+  send(new Response(null, {
+    status: 200,
+    headers: { "Content-Type": "text/xml" },
+  }));
+};

@@ -11,18 +11,18 @@ export default define.page(async function ProjectsIndex(ctx) {
     <>
       <Head>
         <title>Projects | werdxz</title>
-        <meta name="description" content="Open-source projects by werdxz" />
+        <meta name="description" content="Open-source projects by werdxz: software built with Rust, TypeScript, and modern frameworks. Source code available on GitHub." />
 
         {/* OpenGraph tags */}
         <meta property="og:title" content="Projects | werdxz" />
-        <meta property="og:description" content="Open-source projects by werdxz" />
+        <meta property="og:description" content="Open-source projects by werdxz: software built with Rust, TypeScript, and modern frameworks." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://projects.werdxz.info/" />
 
         {/* Twitter Card tags */}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Projects | werdxz" />
-        <meta name="twitter:description" content="Open-source projects by werdxz" />
+        <meta name="twitter:description" content="Open-source projects by werdxz: software built with Rust, TypeScript, and modern frameworks." />
       </Head>
 
       <ProjectSearch projects={projects} initialQuery={initialQuery} />

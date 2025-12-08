@@ -34,7 +34,7 @@ pub fn App() -> impl IntoView {
 
     view! {
         <Title text="WERDXZ - Software Engineer Portfolio"/>
-        <Meta name="description" content="Professional portfolio showcasing software engineering projects, experience, and technical writing."/>
+        <Meta name="description" content="My software engineering portfolio. View projects, work experience, and technical writing in Rust, TypeScript, and modern web technologies."/>
 
         // injects a stylesheet into the document <head>
         // id=leptos means cargo-leptos will hot-reload this stylesheet

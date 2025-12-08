@@ -241,4 +241,10 @@ export default component$(() => {
 
 export const head: DocumentHead = {
   title: "Blog | werdxz.info",
+  meta: [
+    {
+      name: "description",
+      content: "Technical blog by werdxz covering software engineering, programming, and technology. Posts about Rust, TypeScript, web development, and more.",
+    },
+  ],
 };

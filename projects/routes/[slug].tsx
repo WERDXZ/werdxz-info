@@ -1,4 +1,5 @@
 import { Head } from "fresh/runtime";
+import { HttpError } from "fresh";
 import { define } from "../utils.ts";
 import { getProjectBySlug, fetchReadme, type Project } from "../lib/api.ts";
 import { extractHeadings, markdownToHTML } from "../lib/markdown.ts";
@@ -10,19 +11,7 @@ export default define.page(async function ProjectDetail(ctx) {
     const project = await getProjectBySlug(slug);
 
     if (!project) {
-      return (
-        <>
-          <Head>
-            <title>Project Not Found | werdxz</title>
-          </Head>
-
-          <div class="not-found">
-            <h1>Project Not Found</h1>
-            <p>The project "{slug}" could not be found.</p>
-            <a href="/" f-client-nav>← Back to Projects</a>
-          </div>
-        </>
-      );
+      throw new HttpError(404, `Project "${slug}" not found`);
     }
 
     const readme = await fetchReadme(project.readme_url);

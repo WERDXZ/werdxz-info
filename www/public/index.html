@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="werdxz - personal website">
+    <!-- Last updated: 2025-10-22 -->
+    <title>werdxz</title>
+    <style>
+        /* Import global variables */
+        @import url('https://cloud.werdxz.info/shared/styles/variables.css');
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family-sans);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-primary);
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: var(--spacing-md);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        /* Header - 100vh hero section */
+        header {
+            grid-column: 1 / -1; /* span full width */
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: subgrid;
+            align-content: center;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        /* Desktop: center content in middle columns */
+        header > h1,
+        header > nav {
+            grid-column: 3 / 7; /* columns 3-6 (4 columns of content) */
+        }
+
+        .scroll-indicator {
+            grid-column: 1 / -1; /* full width for centering */
+        }
+
+        .site-title {
+            font-size: var(--font-size-h2);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        /* Main navigation links */
+        .links-list {
+            list-style: none;
+        }
+
+        .link-item {
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .link-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .link-main {
+            display: inline-block;
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-link);
+            text-decoration: none;
+            line-height: 1.2;
+        }
+
+        .link-main:hover {
+            color: var(--color-text-link-hover);
+            transform: translateX(4px);
+        }
+
+        .link-description {
+            display: block;
+            margin-top: var(--spacing-sm);
+            margin-left: var(--spacing-xl); /* indent the description */
+            font-size: var(--font-size-md);
+            color: var(--color-text-tertiary);
+            line-height: var(--line-height-relaxed);
+        }
+
+        .link-description::before {
+            content: "→ ";
+            color: var(--color-primary-500);
+            margin-right: var(--spacing-xs);
+        }
+
+        /* Secondary horizontal links */
+        .secondary-nav {
+            margin-top: var(--spacing-4xl);
+            padding-top: var(--spacing-2xl);
+            border-top: 1px solid var(--color-border-subtle);
+        }
+
+        .secondary-links {
+            list-style: none;
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+
+        .secondary-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+        }
+
+        .secondary-link:hover {
+            color: var(--color-text-link-hover);
+        }
+
+        .link-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            stroke: currentColor;
+        }
+
+        .secondary-links li:not(:last-child)::after {
+            content: "•";
+            margin-left: var(--spacing-lg);
+            color: var(--color-text-tertiary);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: var(--spacing-xl);
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-text-tertiary);
+            font-size: var(--font-size-sm);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Main - section */
+        main {
+            grid-column: 1 / -1; /* span full width */
+            background-color: var(--color-bg-secondary);
+            min-height: 100vh;
+            padding: var(--spacing-5xl) 0;
+            display: grid;
+            grid-template-columns: subgrid;
+            align-content: start; /* pack content at top without extra spacing */
+        }
+
+        main > * {
+            grid-column: 3 / 7; /* center content in middle columns */
+        }
+
+        main h2 {
+            font-size: var(--font-size-h3);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        main p {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+            margin-bottom: var(--spacing-md);
+        }
+
+        main p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Latest updates */
+        .updates-status {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .updates-list {
+            margin-top: var(--spacing-sm);
+        }
+
+        .update-item {
+            padding: var(--spacing-lg) 0;
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        .update-item:last-child {
+            border-bottom: none;
+        }
+
+        .update-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .update-type {
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-text-tertiary);
+        }
+
+        .update-link {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-link);
+            text-decoration: none;
+        }
+
+        .update-link:hover {
+            text-decoration: underline;
+        }
+
+        .update-date {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .update-summary {
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+            margin: 0;
+        }
+
+        .updates-links {
+            margin-top: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .updates-links a {
+            color: var(--color-text-link);
+            text-decoration: none;
+        }
+
+        .updates-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            grid-column: 1 / -1; /* span full width */
+            min-height: 30vh;
+            padding: var(--spacing-2xl) 0;
+            border-top: 1px solid var(--color-border-subtle);
+            display: grid;
+            grid-template-columns: subgrid;
+            align-content: center;
+        }
+
+        footer > * {
+            grid-column: 1 / -1; /* full width */
+        }
+
+        footer p {
+            text-align: center;
+            color: var(--color-text-tertiary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 768px) {
+            body {
+                grid-template-columns: 1fr; /* single column on mobile */
+                padding: 0 var(--spacing-sm);
+            }
+
+            header {
+                padding: var(--spacing-xl) 0; /* reduced vertical padding on mobile */
+            }
+
+            /* Mobile: full width content */
+            header,
+            main,
+            footer {
+                grid-column: 1;
+            }
+
+            header > h1,
+            header > nav,
+            main > *,
+            footer > * {
+                grid-column: 1;
+            }
+
+            .site-title {
+                display: none; /* hide site title on mobile to save space */
+            }
+
+            .link-main {
+                font-size: var(--font-size-xl);
+            }
+
+            .link-description {
+                font-size: var(--font-size-sm);
+                margin-left: var(--spacing-md); /* less indent on mobile */
+            }
+
+            .link-item {
+                margin-bottom: var(--spacing-2xl);
+            }
+
+            .secondary-nav {
+                margin-top: var(--spacing-2xl);
+                padding-top: var(--spacing-xl);
+            }
+
+            .secondary-links {
+                gap: var(--spacing-sm);
+                justify-content: center; /* center align on mobile */
+                flex-wrap: wrap; /* allow wrapping if needed */
+            }
+
+            .secondary-links li:not(:last-child)::after {
+                margin-left: var(--spacing-sm); /* reduce bullet spacing on mobile */
+            }
+
+            .link-icon {
+                display: none; /* hide icons on mobile */
+            }
+
+            .scroll-indicator {
+                display: none; /* hide on mobile since header is no longer 100vh */
+            }
+
+            main {
+                padding: var(--spacing-2xl) 0;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .link-main {
+                font-size: var(--font-size-lg);
+            }
+
+            .link-description {
+                margin-left: var(--spacing-sm);
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Focus visible for keyboard navigation */
+        *:focus-visible {
+            outline: 2px solid var(--color-primary-500);
+            outline-offset: 2px;
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: background-color var(--transition-base),
+                        color var(--transition-base),
+                        border-color var(--transition-base),
+                        transform var(--transition-base);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="site-title">werdxz</h1>
+
+        <nav aria-label="Main navigation">
+            <ul class="links-list">
+                <li class="link-item">
+                    <a href="https://werdxz.com/industry" class="link-main" aria-label="Portfolio">
+                        Portfolio
+                    </a>
+                    <span class="link-description">Professional software engineering portfolio</span>
+                </li>
+
+                <li class="link-item">
+                    <a href="https://projects.werdxz.info" class="link-main" aria-label="Projects">
+                        Projects
+                    </a>
+                    <span class="link-description">Open-source projects and developer tools</span>
+                </li>
+
+                <li class="link-item">
+                    <a href="https://blog.werdxz.info" class="link-main" aria-label="Blog">
+                        Blog
+                    </a>
+                    <span class="link-description">Technical writing and deep dives</span>
+                </li>
+            </ul>
+
+            <aside class="secondary-nav">
+                <ul class="secondary-links">
+                    <li>
+                        <a href="https://resume.werdxz.info" class="secondary-link" target="_blank" rel="noopener noreferrer">
+                            <svg class="link-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="fill: none;">
+                                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                                <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                <path d="M10 9H8"></path>
+                                <path d="M16 13H8"></path>
+                                <path d="M16 17H8"></path>
+                            </svg>
+                            Resume
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/werdxz" class="secondary-link" target="_blank" rel="noopener noreferrer">
+                            <svg class="link-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+                            </svg>
+                            GitHub
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/jiqing-yang-21b215294/" class="secondary-link" target="_blank" rel="noopener noreferrer">
+                            <svg class="link-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
+                            </svg>
+                            LinkedIn
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+        </nav>
+
+        <p class="scroll-indicator" aria-hidden="true">↓ scroll</p>
+    </header>
+
+    <main id="latest-updates">
+        <p>
+            Personal website for WERDXZ, this site is written in pure <code>html</code> and <code>css</code>.
+        </p>
+        <h2>Latest Updates</h2>
+        <p id="updates-status" class="updates-status">
+            Loading latest updates...
+        </p>
+        <div id="updates-list" class="updates-list" aria-live="polite"></div>
+        <p class="updates-links">
+            <a href="https://blog.werdxz.info">View all posts</a> ·
+            <a href="https://projects.werdxz.info">View all projects</a>
+        </p>
+    </main>
+
+    <footer>
+        <p>© 2025 Jiqing Yang</p>
+        <p style="font-size: var(--font-size-xs); margin-top: var(--spacing-sm);">
+            Source code licensed under <a href="https://github.com/werdxz/werdxz-info/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-tertiary); text-decoration: underline;">MIT</a>.
+            Contents licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-tertiary); text-decoration: underline;">CC BY-SA 4.0</a>.
+        </p>
+    </footer>
+    <script>
+        (() => {
+            const MAX_UPDATES = 2;
+            const SOURCE_ADAPTERS = [
+                {
+                    endpoint: "https://api.werdxz.info/v1/posts?limit=3",
+                    pickItems: (payload) => Array.isArray(payload.posts) ? payload.posts : [],
+                    mapItem: (post) => ({
+                        type: "Post",
+                        title: post.title || "Untitled post",
+                        date: post.published_at || "",
+                        summary: post.summary || "",
+                        url: `https://blog.werdxz.info/posts/${encodeURIComponent(post.slug || "")}`
+                    })
+                },
+                {
+                    endpoint: "https://api.werdxz.info/v1/projects",
+                    pickItems: (payload) => Array.isArray(payload.projects) ? payload.projects : [],
+                    mapItem: (project) => ({
+                        type: "Project",
+                        title: project.name || "Untitled project",
+                        date: project.created_at || project.updated_at || "",
+                        summary: project.description || "",
+                        url: `https://projects.werdxz.info/${encodeURIComponent(project.slug || "")}`
+                    })
+                }
+            ];
+
+            const updatesStatus = document.getElementById("updates-status");
+            const updatesList = document.getElementById("updates-list");
+
+            const toTimestamp = (value) => {
+                if (!value) {
+                    return 0;
+                }
+
+                const normalized = value.includes("T") ? value : `${value.replace(" ", "T")}Z`;
+                const parsed = Date.parse(normalized);
+                return Number.isNaN(parsed) ? 0 : parsed;
+            };
+
+            const formatter = new Intl.DateTimeFormat("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                timeZone: "UTC"
+            });
+
+            const formatDate = (value) => {
+                const timestamp = toTimestamp(value);
+                if (!timestamp) {
+                    return "Unknown date";
+                }
+
+                return formatter.format(timestamp);
+            };
+
+            const cleanSummary = (value) => {
+                const compact = (value || "").replace(/\s+/g, " ").trim();
+                if (!compact) {
+                    return "";
+                }
+
+                return compact.length > 130 ? `${compact.slice(0, 127)}...` : compact;
+            };
+
+            const fetchJson = async (url) => {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed request: ${response.status}`);
+                }
+
+                return response.json();
+            };
+
+            const loadSourceItems = async (source) => {
+                const payload = await fetchJson(source.endpoint);
+                return source
+                    .pickItems(payload)
+                    .map((item) => source.mapItem(item))
+                    .filter((item) => item.title && item.url);
+            };
+
+            const renderItem = (item) => {
+                const row = document.createElement("article");
+                row.className = "update-item";
+
+                const head = document.createElement("div");
+                head.className = "update-head";
+
+                const kind = document.createElement("span");
+                kind.className = "update-type";
+                kind.textContent = item.type;
+
+                const link = document.createElement("a");
+                link.className = "update-link";
+                link.href = item.url;
+                link.textContent = item.title;
+
+                const date = document.createElement("time");
+                date.className = "update-date";
+                date.dateTime = item.date;
+                date.textContent = formatDate(item.date);
+
+                head.appendChild(kind);
+                head.appendChild(link);
+                head.appendChild(date);
+                row.appendChild(head);
+
+                const summary = cleanSummary(item.summary);
+                if (summary) {
+                    const summaryElement = document.createElement("p");
+                    summaryElement.className = "update-summary";
+                    summaryElement.textContent = summary;
+                    row.appendChild(summaryElement);
+                }
+
+                return row;
+            };
+
+            const showFallback = () => {
+                updatesStatus.hidden = false;
+                updatesStatus.innerHTML = "Could not load updates right now. Check <a href=\"https://blog.werdxz.info\">Blog</a> or <a href=\"https://projects.werdxz.info\">Projects</a>.";
+                updatesList.replaceChildren();
+            };
+
+            const loadUpdates = async () => {
+                const settled = await Promise.allSettled(
+                    SOURCE_ADAPTERS.map((source) => loadSourceItems(source))
+                );
+
+                const merged = settled
+                    .filter((result) => result.status === "fulfilled")
+                    .flatMap((result) => result.value)
+                    .sort((a, b) => toTimestamp(b.date) - toTimestamp(a.date))
+                    .slice(0, MAX_UPDATES);
+
+                if (merged.length === 0) {
+                    showFallback();
+                    return;
+                }
+
+                updatesStatus.hidden = true;
+                updatesList.replaceChildren(...merged.map(renderItem));
+            };
+
+            loadUpdates().catch(showFallback);
+        })();
+    </script>
+</body>
+</html>

@@ -1,6 +1,3 @@
-# HTML content managed via bucket (changes frequently)
-www/public/*.html
-
 # Images and media (managed via bucket when added)
 www/public/images/
 www/public/media/
